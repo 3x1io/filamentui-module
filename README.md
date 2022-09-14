@@ -1,19 +1,28 @@
-# Admin One UI Theme for VILT
+# Filament UI Theme for VILT
 
-Admin One UI Build as a theme for VILT Stack
+Filament PHP UI kit for VILT stack
 
 ## Install
 
 ```bash
-composer require queents/ui-module
+composer require 3x1io/filamentui-module
 ```
 Add Module to `modules_statuses.json` if not exists
 
 ```json
 {
-    "UI": true
+    "FilamentUI": true
 }
 ```
+
+```dotenv
+THEME_MODULE=FilamentUI
+```
+
+```bash
+php artisan config:clear
+```
+
 Publish Assets
 
 ```bash
@@ -31,17 +40,13 @@ yarn & yarn build
 
 you can join our discord server to get support [VILT Admin](https://discord.gg/HUNYbgKDdx)
 
-## Docs
-
-look to the new docs of v4.00 on my website [Docs](https://vilt.3x1.io/docs/)
-
 ## Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
 
 ## Credits
 
-- [Queen Tech Solutions](https://github.com/queents)
+- [Fady Mondy](https://github.com/3x1io)
 
 ## License
 
