@@ -1,0 +1,29 @@
+{
+    "name": "FilamentUI",
+    "alias": "filamentui",
+    "description": "Filament PHP UI kit for VILT stack",
+    "keywords": [
+        "laravel",
+        "VILT",
+        "generator",
+        "resource",
+        "page",
+        "widget",
+        "pages",
+        "modal",
+        "admin one",
+        "vuejs",
+        "ineriajs",
+        "tailwind.css",
+        "filamentphp",
+        "theme",
+        "style"
+    ],
+    "priority": 0,
+    "providers": [
+        "Modules\\FilamentUI\\Providers\\FilamentUIServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": []
+}
