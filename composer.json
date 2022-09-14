@@ -1,5 +1,5 @@
 {
-    "name": "3x1io/filamentui",
+    "name": "3x1io/filamentui-module",
     "description": "Filament PHP UI kit for VILT stack",
     "type": "laravel-module",
     "license": "MIT",
