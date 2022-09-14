@@ -2,17 +2,6 @@
 import {useForm, Head, Link} from '@inertiajs/inertia-vue3'
 import {mdiAccount, mdiAsterisk} from '@mdi/js'
 import LayoutGuest from '@@/Layouts/LayoutGuest.vue'
-import SectionFullScreen from '@@/Themes/AdminOne/SectionFullScreen.vue'
-import CardBox from '@@/Themes/AdminOne/CardBox.vue'
-import FormCheckRadioGroup from '@@/Themes/AdminOne/FormCheckRadioGroup.vue'
-import FormField from '@@/Themes/AdminOne/FormField.vue'
-import FormControl from '@@/Themes/AdminOne/FormControl.vue'
-import BaseDivider from '@@/Themes/AdminOne/BaseDivider.vue'
-import BaseButton from '@@/Themes/AdminOne/BaseButton.vue'
-import BaseButtons from '@@/Themes/AdminOne/BaseButtons.vue'
-import FormValidationErrors from '@@/Themes/AdminOne/FormValidationErrors.vue'
-import NotificationBarInCard from '@@/Themes/AdminOne/NotificationBarInCard.vue'
-import BaseLevel from '@@/Themes/AdminOne/BaseLevel.vue'
 import FilamentText from '@@/Components/Rows/FilamentText.vue';
 import FilamentCheck from '@@/Components/Rows/FilamentCheck.vue';
 import {ref} from "vue";
