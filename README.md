@@ -26,15 +26,16 @@ php artisan config:clear
 Publish Assets
 
 ```bash
-npm i & npm run build
+yarn
 ```
-
-OR
 
 ```bash
-yarn & yarn build
+yarn add tippy.js
 ```
 
+```bash
+yarn build
+```
 
 ## Support
 
