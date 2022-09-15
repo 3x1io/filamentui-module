@@ -645,10 +645,10 @@ layoutStore.setBreadcrumbs({
                                           ? action.modal
                                             ? openModal(action.modal, id)
                                             : fireAction(action.action, id)
-                                          : openUrl(action.url)
+                                          : openUrl(action.url +'/'+id)
                                       "
                                     style="padding: 5px 8px"
-                                    class="inline-flex items-center justify-center text-sm font-normal filament-tables-link filament-tables-link-action"
+                                    class="filament-link inline-flex items-center justify-center gap-0.5 font-medium hover:underline focus:outline-none focus:underline text-sm text-gray-600 hover:text-gray-500 dark:text-gray-300 dark:hover:text-gray-200 filament-tables-link-action"
                                     :class="'text-' + action.type + '-700 hover:text-' + action.type + '-600'"
                                     role="button"
                                 >

@@ -82,9 +82,8 @@ function storeSearch() {
     reload();
 }
 onMounted(()=>{
-    if(usePage().props.value.list.search){
-        search.value = usePage().props.value.list.search;
-
+    if(usePage().props.value.list && usePage().props.value.list.search){
+        search.value = usePage().props.value.list.search ? usePage().props.value.list.search : '';
     }
 })
 </script>

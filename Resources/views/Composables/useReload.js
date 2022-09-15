@@ -31,7 +31,7 @@ export function useReload(page) {
             });
         }
 
-        Inertia.get(route(resourceStore.currentUrl + '.index'), url, {
+        Inertia.get(resourceStore.currentUrl.includes('https://') ? resourceStore.currentUrl : route(resourceStore.currentUrl + '.index'), url, {
             preserveScroll: true,
             replace: true,
         });

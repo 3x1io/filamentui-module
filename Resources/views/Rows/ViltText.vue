@@ -29,7 +29,15 @@
         </div>
     </div>
     <div v-if="view === 'table'">
-        <p>{{ modelValue }}</p>
+        <p v-if="row.badge" class="inline-flex items-center justify-center ml-auto rtl:ml-0 rtl:mr-auto min-h-4 px-2 py-0.5 text-sm font-medium tracking-tight rounded-xl whitespace-normal " :class="row.color?'text-'+row.color+'-700 dark:text-'+row.color+'-500 bg-'+row.color+'-500/10': 'text-primary-700 dark:text-primary-500 text-primary-500/10' ">
+            <span v-if="row.max">
+                {{modelValue.split(' ').slice(0, row.max).join('  ') +'...'}}
+            </span>
+            <span v-else>
+                {{modelValue}}
+            </span>
+        </p>
+        <p v-else>{{ modelValue }}</p>
     </div>
 </template>
 

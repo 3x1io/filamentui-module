@@ -27,6 +27,14 @@ import {Inertia} from "@inertiajs/inertia";
 
 const props = defineProps({
     rows: Array,
+    cols: {
+        type: Boolean,
+        default: true
+    },
+    hasBulk: {
+      type: Boolean,
+      default: true
+    },
     roles: Object,
     collection: Object,
     url: String,
@@ -54,8 +62,15 @@ const { cookies } = useCookies();
 const listRows = computed(() => {
     let list = [];
     for (let i = 0, ii = props.rows.length; i < ii; i++) {
-        if (props.rows[i].list && cols.value[props.rows[i].name]) {
-            list.push(props.rows[i]);
+        if(props.cols){
+            if (props.rows[i].list && cols.value[props.rows[i].name]) {
+                list.push(props.rows[i]);
+            }
+        }
+        else {
+            if (props.rows[i].list) {
+                list.push(props.rows[i]);
+            }
         }
     }
     return list;
@@ -148,18 +163,58 @@ function transItem(item, key) {
     }
 }
 
+let isDataObject = typeof props.collection.data === 'object';
+let dataLength = 0;
+if(isDataObject){
+    dataLength = Object.keys(props.collection.data).length;
+}
+else {
+    dataLength = props.collection.data.length;
+}
+
+let filterData = computed(()=>{
+    if(isDataObject){
+        for(let i=0; i<dataLength; i++){
+
+            for(let r=0; r<props.rows.length; r++){
+                if(props.rows[r].name.includes('.')){
+                    let nameArray = props.rows[r].name.split('.');
+                    if(props.rows[r].max){
+                        props.collection.data[Object.keys(props.collection.data)[i]][props.rows[r].name] =  nameArray.reduce((value, entry) => value[entry], props.collection.data[Object.keys(props.collection.data)[i]]).split(' ').slice(0, props.rows[r].max).join('  ')+'...';
+                    }
+                    else {
+                        props.collection.data[Object.keys(props.collection.data)[i]][props.rows[r].name] =  nameArray.reduce((value, entry) => value[entry], props.collection.data[Object.keys(props.collection.data)[i]]);
+                    }
+                }
+            }
+        }
+    }
+    else {
+        for(let i=0; i<dataLength; i++){
+            for(let r=0; i<props.rows.length; i++){
+                let nameArray = props.rows.name.split('.');
+                props.collection.data[i][props.rows.name] =  nameArray.reduce((value, entry) => value[entry], props.collection.data[i]);
+            }
+        }
+    }
+
+    return props.collection.data;
+
+})
+
 </script>
 <template>
     <div v-if="table.name === 'table'">
         <table
             class="filament-tables-table w-full text-left rtl:text-right divide-y table-auto dark:divide-gray-700"
-            v-if="props.collection.data.length"
+            v-if="dataLength"
         >
             <thead>
                 <tr
                     class="bg-gray-500/5"
                 >
                     <th
+                        v-if="props.hasBulk"
                         class="filament-tables-checkbox-cell w-4 px-4 whitespace-nowrap"
                     >
                         <input
@@ -213,10 +268,11 @@ function transItem(item, key) {
             <tbody class="divide-y whitespace-nowrap dark:divide-gray-700">
                 <tr
                     class="filament-tables-row hover:bg-gray-50 dark:hover:bg-gray-500/10"
-                    v-for="(item, key) in props.collection.data"
+                    v-for="(item, key) in filterData"
                     :key="key"
                 >
                     <th
+                        v-if="props.hasBulk"
                         class="filament-tables-checkbox-cell w-4 px-4 whitespace-nowrap"
                     >
                         <input
@@ -228,7 +284,7 @@ function transItem(item, key) {
                         />
                     </th>
                     <td
-                        class="filament-tables-cell dark:text-white"
+                        class="filament-tables-cell dark:text-white px-4"
                         v-for="(field, index) in listRows"
                         :key="index"
                     >
@@ -354,11 +410,11 @@ function transItem(item, key) {
                             sorting: store.orderBy == item.field,
                         }"
                     >
-                        <div class="flex items-center justify-end gap-4 my-4">
+                        <div class="flex items-center justify-end gap-4 my-auto">
                             <slot name="actions" v-bind="item"></slot>
-                            <div>
+                            <div v-if="props.roles.view || props.roles.viewAny">
                                 <button
-                                    v-if="props.roles.view || props.roles.viewAny"
+
                                     @click.prevent="viewItem(item)"
                                     class="filament-link inline-flex items-center justify-center gap-0.5 font-medium hover:underline focus:outline-none focus:underline text-sm text-gray-600 hover:text-gray-500 dark:text-gray-300 dark:hover:text-gray-200 filament-tables-link-action"
                                 >
@@ -369,9 +425,9 @@ function transItem(item, key) {
                                     {{ trans('global.view') }}
                                 </button>
                             </div>
-                            <div>
+                            <div v-if="props.roles.edit">
                                 <button
-                                    v-if="props.roles.edit"
+
                                     @click.prevent="editItem(item)"
                                     class="filament-link inline-flex items-center justify-center gap-0.5 font-medium hover:underline focus:outline-none focus:underline text-sm text-primary-600 hover:text-primary-500 dark:text-primary-500 dark:hover:text-primary-400 filament-tables-link-action"
                                     role="button"
@@ -382,11 +438,11 @@ function transItem(item, key) {
                                     {{ trans('global.edit') }}
                                 </button>
                             </div>
-                            <form>
-                                <button
-                                    v-if="
+                            <form v-if="
                                         props.roles.delete || props.roles.deleteAny
-                                    "
+                                    ">
+                                <button
+
                                     @click.prevent="deleteItem(item)"
                                     type="submit"
                                     class="filament-link inline-flex items-center justify-center gap-0.5 font-medium hover:underline focus:outline-none focus:underline text-sm text-danger-600 hover:text-danger-500 dark:text-danger-500 dark:hover:text-danger-400 filament-tables-link-action"
