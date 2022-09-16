@@ -114,6 +114,11 @@ let {formMake} = useGetForm();
 function fireAction (name, id = null){
     Inertia.post(route(name), {
         id: id ? id : selectedID.value,
+    }, {
+        onSuccess: () => {
+            success();
+            reload();
+        }
     });
 }
 
@@ -232,9 +237,9 @@ function switchBulk(id) {
 List Methods
  */
 
-function popUp(images){
+function popUp(getImages){
     visible.value = true;
-    images.value = images;
+    images.value = getImages;
 }
 
 function createItem(){
@@ -647,7 +652,6 @@ layoutStore.setBreadcrumbs({
                                             : fireAction(action.action, id)
                                           : openUrl(action.url +'/'+id)
                                       "
-                                    style="padding: 5px 8px"
                                     class="filament-link inline-flex items-center justify-center gap-0.5 font-medium hover:underline focus:outline-none focus:underline text-sm text-gray-600 hover:text-gray-500 dark:text-gray-300 dark:hover:text-gray-200 filament-tables-link-action"
                                     :class="'text-' + action.type + '-700 hover:text-' + action.type + '-600'"
                                     role="button"

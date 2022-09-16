@@ -8,7 +8,6 @@
         <div>
             <flat-pickr
                 v-model="value"
-                @on-change="$emit('update:modelValue', value)"
                 :config="datetime"
                 :placeholder="row.placeholder ? row.placeholder : row.name"
                 class="block my-2 w-full transition duration-75 rounded-lg shadow-sm focus:border-primary-500 focus:ring-1 focus:ring-inset focus:ring-primary-500 disabled:opacity-70 dark:bg-gray-700 dark:text-white dark:focus:border-primary-500 border-gray-300 dark:border-gray-600"
@@ -63,17 +62,26 @@ export default defineComponent({
             },
         };
     },
-    beforeUpdate() {
-        if (this.modelValue) {
-            this.value = this.modelValue;
-        }
+    watch: {
+        value: function (val) {
+            if(this.view === 'input') {
+                this.$emit("update:modelValue", val);
+            }
+        },
+        modelValue: function (val) {
+            if(this.view === 'input'&& this.modelValue) {
+                this.value = val;
+            }
+        },
     },
     mounted() {
-        if (this.row.default) {
-            this.value = this.row.default;
-        }
         if(this.modelValue){
             this.value = this.modelValue;
+        }
+        else {
+            if (this.row.default) {
+                this.value = this.row.default;
+            }
         }
     },
     props: {

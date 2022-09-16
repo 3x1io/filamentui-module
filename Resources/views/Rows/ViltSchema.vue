@@ -11,18 +11,18 @@
                 class="p-4 my-4 border rounded-lg"
             >
                 <div v-for="(item, key) in row.options">
-                    <ViltText v-if="item.vue === 'ViltText.vue'" :row="item" v-model="main[item.name]" @update:modelValue="update"/>
-                    <ViltEmail v-if="item.vue === 'ViltEmail.vue'" :row="item" v-model="main[item.name]" @update:modelValue="update"/>
-                    <ViltTel v-if="item.vue === 'ViltTel.vue'" :row="item" v-model="main[item.name]" @update:modelValue="update"/>
-                    <ViltTextArea v-if="item.vue === 'ViltTextArea.vue'" :row="item" v-model="main[item.name]" @update:modelValue="update"/>
-                    <ViltNumber v-if="item.vue === 'ViltNumber.vue'" :row="item" v-model="main[item.name]" @update:modelValue="update"/>
-                    <ViltSelect v-if="item.vue === 'ViltSelect.vue'" :row="item" v-model="main[item.name]" @update:modelValue="update"/>
-                    <ViltSwitch v-if="item.vue === 'ViltSwitch.vue'" :row="item" v-model="main[item.name]" @update:modelValue="update"/>
-                    <ViltColor v-if="item.vue === 'ViltColor.vue'" :row="item" v-model="main[item.name]" @update:modelValue="update"/>
-                    <ViltDate v-if="item.vue === 'ViltDate.vue'" :row="item" v-model="main[item.name]" @update:modelValue="update"/>
-                    <ViltDateTime v-if="item.vue === 'ViltDateTime.vue'" :row="item" v-model="main[item.name]" @update:modelValue="update"/>
-                    <ViltTime v-if="item.vue === 'ViltTime.vue'" :row="item" v-model="main[item.name]" @update:modelValue="update"/>
-                    <ViltMedia v-if="item.vue === 'ViltMedia.vue'" :row="item" v-model="main[item.name]" @update:modelValue="update"/>
+                    <ViltText v-if="item.vue === 'ViltText.vue'" :row="item" v-model="main[item.name]" />
+                    <ViltEmail v-if="item.vue === 'ViltEmail.vue'" :row="item" v-model="main[item.name]" />
+                    <ViltTel v-if="item.vue === 'ViltTel.vue'" :row="item" v-model="main[item.name]" />
+                    <ViltTextArea v-if="item.vue === 'ViltTextArea.vue'" :row="item" v-model="main[item.name]" />
+                    <ViltNumber v-if="item.vue === 'ViltNumber.vue'" :row="item" v-model="main[item.name]" />
+                    <ViltSelect v-if="item.vue === 'ViltSelect.vue'" :row="item" v-model="main[item.name]" />
+                    <ViltSwitch v-if="item.vue === 'ViltSwitch.vue'" :row="item" v-model="main[item.name]" />
+                    <ViltColor v-if="item.vue === 'ViltColor.vue'" :row="item" v-model="main[item.name]" />
+                    <ViltDate v-if="item.vue === 'ViltDate.vue'" :row="item" v-model="main[item.name]" />
+                    <ViltDateTime v-if="item.vue === 'ViltDateTime.vue'" :row="item" v-model="main[item.name]" />
+                    <ViltTime v-if="item.vue === 'ViltTime.vue'" :row="item" v-model="main[item.name]" />
+                    <ViltMedia v-if="item.vue === 'ViltMedia.vue'" :row="item" v-model="main[item.name]" />
                 </div>
             </div>
         </div>
@@ -30,31 +30,60 @@
         <JetInputError v-if="message" :message="message" class="mt-2" />
     </div>
 
-    <div v-if="view === 'view'">
+    <div v-if="view === 'view' && main">
         <div class="flex justify-between my-4">
             <div>
-                <p class="font-bold capitalize">{{ row.label }}</p>
+                <p class="font-bold capitalize">{{ row.label ? row.label : row.name }}</p>
             </div>
             <div></div>
         </div>
-        <div class="border rounded-lg py-2 px-2">
-            <div
-                v-for="(item, key) in row.options"
-                :key="key"
-                :class="{ 'border-b': key !== row.options.length - 1 }"
-                class="py-4 flex justify-between"
-            >
-                <div>
-                    <p class="font-bold">{{ item.label }}</p>
-                </div>
-
-                <div v-if="item.vue === 'ViltMedia.vue'">
-                    <img :src="main[item.name]" alt="" class="w-16" />
-                </div>
-                <div v-else>
-                    <p>{{ main[item.name] }}</p>
-                </div>
-            </div>
+        <div>
+            <table class="w-full table-normal">
+                <tbody>
+                <tr
+                    v-for="(item, key) in row.options"
+                    :key="key"
+                    class="py-2 px-2"
+                >
+                    <th class="border">
+                        {{item.label}}
+                    </th>
+                    <td class="border w-full">
+                        <div v-if="item.vue === 'ViltMedia.vue'">
+                            <img :src="main[item.name]" alt="" class="w-16" />
+                        </div>
+                        <div v-else>
+                            <p v-if="main[item.name]" class="px-2 py-2">{{ main[item.name] }}</p>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div v-if="view === 'table' && main">
+        <div class="mx-1 my-1">
+            <table class="w-full table-normal">
+                <tbody>
+                <tr
+                    v-for="(item, key) in row.options"
+                    :key="key"
+                    class="py-2 px-2"
+                >
+                    <th class="border">
+                        {{item.label}}
+                    </th>
+                    <td class="border w-full">
+                        <div v-if="item.vue === 'ViltMedia.vue'">
+                            <img :src="main[item.name]" alt="" class="w-16" />
+                        </div>
+                        <div v-else>
+                            <p v-if="main[item.name]" class="px-2 py-2">{{ main[item.name] }}</p>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 </template>
@@ -96,15 +125,32 @@ export default defineComponent({
             main: [],
         };
     },
-    mounted() {
-        if (this.row.default && !this.modelValue) {
-            this.main = this.row.default;
+    watch:{
+      main:{
+        handler: function (val, oldVal) {
+          if(this.view === 'input'){
+              this.$emit('update:modelValue', val);
+          }
+        },
+        deep: true
+      },
+    modelValue: function (val) {
+        if(this.view === 'input' && this.modelValue) {
+            this.main = val;
         }
+    },
+    },
+    mounted() {
+        this.main = this.optionRows;
+    },
+    beforeUpdate() {
         if (this.modelValue) {
             this.main = this.modelValue;
         }
         else {
-            this.main = this.optionRows;
+            if (this.row.default && !this.modelValue) {
+                this.main = this.row.default;
+            }
         }
     },
     props: {
@@ -143,12 +189,6 @@ export default defineComponent({
             }
             return rows;
         }
-
-    },
-    methods: {
-        update() {
-            this.$emit("update:modelValue", this.main);
-        },
     },
 });
 </script>

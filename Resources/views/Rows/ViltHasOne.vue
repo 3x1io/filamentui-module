@@ -82,13 +82,18 @@ export default defineComponent({
         };
     },
     beforeUpdate() {
-        if (this.row.default && this.view === 'input') {
-            this.value = this.row.default;
-        }
+
     },
     mounted() {
         if(this.view !== 'input'){
-            this.value = this.modelValue;
+            if(this.modelValue){
+                this.value = this.modelValue;
+            }
+            else {
+                if (this.row.default && this.view === 'input') {
+                    this.value = this.row.default;
+                }
+            }
         }
 
         let _this = this;
@@ -119,9 +124,16 @@ export default defineComponent({
         }
     },
     watch: {
-        value(oldValue, newValue) {
-            this.$emit("update:modelValue", this.value);
-            this.$emit("change");
+        value: function (val) {
+            if(this.view === 'input') {
+                this.$emit("update:modelValue", val);
+                this.$emit("change");
+            }
+        },
+        modelValue: function (val) {
+            if(this.view === 'input'&& this.modelValue) {
+                this.value = val;
+            }
         },
     },
     methods: {

@@ -51,12 +51,30 @@ export default defineComponent({
             value: "",
         };
     },
+    watch: {
+        value: function (val) {
+            if(this.view === 'input') {
+                if (val) {
+                    this.$emit("update:modelValue", val);
+                } else {
+                    this.$emit("update:modelValue", "");
+                }
+            }
+        },
+        modelValue: function (val) {
+            if(this.view === 'input'&& this.modelValue) {
+                this.value = val;
+            }
+        },
+    },
     mounted() {
-        if(this.row.default){
-            this.value = this.row.default
-        }
         if (this.modelValue) {
             this.value = this.modelValue;
+        }
+        else {
+            if(this.row.default){
+                this.value = this.row.default
+            }
         }
     },
     props: {

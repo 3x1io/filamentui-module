@@ -54,11 +54,11 @@
         <div>
             <p class="font-bold capitalize">{{ row.label ? row.label: row.name }}</p>
         </div>
-        <div>
+        <div class="flex justify-start space-x-2">
             <p
                 v-for="(item, key) in modelValue"
                 :key="key"
-                class="m-1 p-1 text-center bg-primary-600 text-white rounded-lg"
+                class="inline-flex items-center justify-center ml-auto rtl:ml-0 rtl:mr-auto min-h-4 px-2 py-0.5 text-sm font-medium tracking-tight rounded-xl whitespace-normal bg-primary-200 dark:text-primary-500 text-primary-500 "
                 :style="item.hasOwnProperty('color') ? 'background-color: ' + item.color : ''"
             >
                 <i v-if="item.hasOwnProperty('icon')" :class="item.icon"></i>
@@ -66,11 +66,11 @@
             </p>
         </div>
     </div>
-    <div v-if="view === 'table' && modelValue">
+    <div v-if="view === 'table' && modelValue" class="flex justify-start space-x-2">
         <p
            v-for="(item, key) in modelValue"
            :key="key"
-           class="m-1 p-1 text-center bg-primary-600 text-white rounded-lg"
+           class="inline-flex items-center justify-center ml-auto rtl:ml-0 rtl:mr-auto min-h-4 px-2 py-0.5 text-sm font-medium tracking-tight rounded-xl whitespace-normal bg-primary-200 dark:text-primary-500 text-primary-500 "
            :style="item.hasOwnProperty('color') ? 'background-color: ' + item.color : ''"
         >
             <i v-if="item.hasOwnProperty('icon')" :class="item.icon"></i>
@@ -97,11 +97,6 @@ export default defineComponent({
             isLoading: false,
         };
     },
-    beforeUpdate() {
-        if (this.row.default) {
-            this.value = this.row.default;
-        }
-    },
     mounted() {
         let _this = this;
         if(this.modelValue && this.modelValue.length && this.view ==='input'){
@@ -119,6 +114,11 @@ export default defineComponent({
                     _this.value = response.data.data;
                     _this.isLoading = false;
                 });
+        }
+        else {
+            if (this.row.default) {
+                this.value = this.row.default;
+            }
         }
 
 
@@ -139,9 +139,16 @@ export default defineComponent({
         }
     },
     watch: {
-        value(oldValue, newValue) {
-            this.$emit("update:modelValue", this.value);
-            this.$emit("change");
+        value: function (val) {
+            if(this.view === 'input') {
+                this.$emit("update:modelValue", val);
+                this.$emit("change");
+            }
+        },
+        modelValue: function (val) {
+            if(this.view === 'input'&& this.modelValue) {
+                this.value = val;
+            }
         },
     },
     methods: {

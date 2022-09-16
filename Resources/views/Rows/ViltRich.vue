@@ -10,7 +10,6 @@
             :id="row.name"
             :disabled="row.disabled"
             :placeholder="row.placeholder"
-            @text-change="$emit('update:modelValue', value)"
             :class="{'border-danger-600 ring-danger-600' : message}"
         />
         <small v-if="row.hint" class="text-gray-400 mx-2">{{row.hint}}</small>
@@ -44,15 +43,26 @@ export default {
             value: "",
         };
     },
-    created() {
+    watch: {
+        value: function (val) {
+            if(this.view === 'input') {
+                this.$emit("update:modelValue", val);
+            }
+        },
+        modelValue: function (val) {
+            if(this.view === 'input'&& this.modelValue) {
+                this.value = val;
+            }
+        },
+    },
+    mounted() {
         if (this.modelValue) {
             this.value = this.modelValue
         }
-
-    },
-    mounted() {
-        if (this.row.default) {
-            this.value = this.row.default
+        else {
+            if (this.row.default) {
+                this.value = this.row.default
+            }
         }
     },
     props: {

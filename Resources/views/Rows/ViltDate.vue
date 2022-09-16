@@ -63,17 +63,26 @@ export default defineComponent({
             }
         };
     },
-    beforeUpdate() {
-        if (this.modelValue) {
-            this.value = this.modelValue;
-        }
+    watch: {
+        value: function (val) {
+            if(this.view === 'input') {
+                this.$emit("update:modelValue", val);
+            }
+        },
+        modelValue: function (val) {
+            if(this.view === 'input'&& this.modelValue) {
+                this.value = val;
+            }
+        },
     },
     mounted() {
-        if (this.row.default) {
-            this.value = this.row.default;
-        }
         if(this.modelValue){
             this.value = this.modelValue;
+        }
+        else {
+            if (this.row.default) {
+                this.value = this.row.default;
+            }
         }
     },
     props: {

@@ -45,42 +45,48 @@
             <p class="font-bold capitalize">{{ row.label ? row.label : row.name }}</p>
         </div>
         <div>
-            <div v-if="value" v-lazy-container="{ selector: 'img' }">
-                <div v-if="value && row.multi">
-                    <div v-for="(item, key) in value" :key="key">
+            <div v-if="modelValue">
+                <div v-if="modelValue && row.multi">
+                    <div v-for="(item, key) in modelValue" :key="key">
                         <img
-                            @click.prevent="popUp"
-                            :data-src="item"
+                            :src="item"
                             class="object-cover w-20 h-20 mx-auto rounded-full"
                         />
                     </div>
                 </div>
                 <div v-else>
                     <img
-                        @click.prevent="popUp"
-                        :data-src="value"
+                        :src="modelValue"
                         class="object-cover w-20 h-20 rounded-full border"
                     />
                 </div>
             </div>
             <div  v-else>
                 <img
-                    v-lazy="$page.props.data.appUrl + '/placeholder.webp'"
+                    :src="$page.props.data.appUrl + '/placeholder.webp'"
                     class="object-cover w-20 h-20 rounded-full border"
                 />
             </div>
         </div>
     </div>
-    <div v-if="view === 'table'" class="p-4" v-lazy-container="{ selector: 'img' }">
-        <div v-if="value"  @click.prevent="popUp">
+    <div v-if="view === 'table'" class="p-4">
+        <div v-if="value && row.multi">
             <img
-                :data-src="value"
-                class="object-cover w-20 h-20 mx-auto rounded-full border"
+                @click.prevent="popUp"
+                :src="value[0]"
+                class="object-cover w-20 h-20 mx-auto rounded-full"
+            />
+        </div>
+        <div v-else-if="!row.multi">
+            <img
+                @click.prevent="popUp"
+                :src="value"
+                class="object-cover w-20 h-20 rounded-full border"
             />
         </div>
         <div v-else>
             <img
-                v-lazy="$page.props.data.appUrl + '/placeholder.webp'"
+                :src="$page.props.data.appUrl + '/placeholder.webp'"
                 class="object-cover w-20 h-20 mx-auto rounded-full border"
             />
         </div>
@@ -141,15 +147,45 @@ export default defineComponent({
             images: []
         };
     },
+    watch: {
+        value: function (val) {
+            if(this.view === 'input') {
+                this.$emit("update:modelValue", val);
+            }
+        },
+        modelValue: function (val) {
+            if(this.view === 'input' && this.modelValue) {
+                this.value = val;
+            }
+        },
+    },
     mounted() {
         if(this.modelValue){
-            this.value = this.modelValue;
+            if(this.view === 'input'){
+                if(this.row.multi) {
+                    this.value = this.modelValue;
+                } else {
+                    this.value.push(this.modelValue);
+                }
+            }
+            else {
+                if(this.row.multi){
+                    this.value = this.modelValue[0];
+                }
+                else {
+                    this.value = this.modelValue;
+                }
+            }
+
         }
-        else if(!this.modelValue && (this.view === 'table' || this.view === 'view')) {
-            this.value = false;
-        }
-        if (this.row.default) {
-            this.value = this.row.default;
+        else {
+            if (this.row.default) {
+                if(this.row.multi) {
+                    this.value = this.row.default;
+                } else {
+                    this.value.push(this.row.default);
+                }
+            }
         }
     },
     methods: {
@@ -164,7 +200,12 @@ export default defineComponent({
             this.images.splice(this.images.indexOf(file.file), 1);
         },
         popUp(){
-            this.$emit('popUp', this.value)
+            if(this.row.multi){
+                this.$emit('popUp', this.value);
+            }
+            else {
+                this.$emit('popUp', [this.value]);
+            }
         }
     },
 });

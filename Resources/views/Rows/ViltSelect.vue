@@ -64,12 +64,52 @@
         <div>
             <p class="font-bold capitalize">{{ row.label ? row.label: row.name }}</p>
         </div>
-        <div>
-            <p>{{ modelValue[row.trackByName] }}</p>
+        <div v-if="row.multi">
+            <div class="flex justify-start space-x-2">
+                <p
+                    v-for="(item, key) in modelValue"
+                    :key="key"
+                    class="inline-flex items-center justify-center space-x-2 ml-auto rtl:ml-0 rtl:mr-auto min-h-4 px-2 py-0.5 text-sm font-medium tracking-tight rounded-xl whitespace-normal bg-primary-200 dark:text-primary-500 text-primary-500 "
+                    :style="item.hasOwnProperty('color') ? 'background-color: ' + item.color : ''"
+                >
+                    <i v-if="item.hasOwnProperty('icon')" :class="item.icon"></i>
+                    <span>{{ item[row.trackByName] }}</span>
+                </p>
+            </div>
+        </div>
+        <div v-else>
+            <div class="flex justify-start space-x-2">
+                <p
+                    class="inline-flex items-center justify-center space-x-2 ml-auto rtl:ml-0 rtl:mr-auto min-h-4 px-2 py-0.5 text-sm font-medium tracking-tight rounded-xl whitespace-normal bg-primary-200 dark:text-primary-500 text-primary-500 "
+                    :style="modelValue.hasOwnProperty('color') ? 'background-color: ' + modelValue.color : ''"
+                >
+                    <i v-if="modelValue.hasOwnProperty('icon')" :class="modelValue.icon"></i>
+                    <span>{{ modelValue[row.trackByName] }}</span>
+                </p>
+            </div>
         </div>
     </div>
-    <div v-if="view === 'table' && modelValue">
-        <p>{{ modelValue[row.trackByName] }}</p>
+    <div v-if="view === 'table' && modelValue" class="flex justify-start space-x-2">
+        <div v-if="row.multi">
+            <p
+                v-for="(item, key) in modelValue"
+                :key="key"
+                class="inline-flex items-center justify-center ml-auto rtl:ml-0 rtl:mr-auto min-h-4 px-2 py-0.5 text-sm font-medium tracking-tight rounded-xl whitespace-normal bg-primary-200 dark:text-primary-500 text-primary-500 "
+                :style="item.hasOwnProperty('color') ? 'background-color: ' + item.color : ''"
+            >
+                <i v-if="item.hasOwnProperty('icon')" :class="item.icon"></i>
+                {{ item ? item[row.trackByName]: null }}
+            </p>
+        </div>
+        <div v-else>
+            <p
+                class="inline-flex items-center justify-center ml-auto rtl:ml-0 rtl:mr-auto min-h-4 px-2 py-0.5 text-sm font-medium tracking-tight rounded-xl whitespace-normal bg-primary-200 dark:text-primary-500 text-primary-500 "
+                :style="modelValue.hasOwnProperty('color') ? 'background-color: ' + modelValue.color : ''"
+            >
+                <i v-if="modelValue.hasOwnProperty('icon')" :class="modelValue.icon"></i>
+                {{ modelValue ? modelValue[row.trackByName]: null }}
+            </p>
+        </div>
     </div>
 </template>
 
@@ -94,20 +134,27 @@ export default defineComponent({
             return this.row.options.some(option => option.media || option.description);
         },
     },
-    beforeUpdate() {
-        if (this.row.default) {
-            this.value = this.row.default;
-        }
-    },
-    mounted() {
+    created() {
         if (this.modelValue) {
             this.value = this.modelValue;
         }
+        else {
+            if (this.row.default) {
+                this.value = this.row.default;
+            }
+        }
     },
     watch: {
-        value(oldValue, newValue) {
-            this.$emit("update:modelValue", this.value);
-            this.$emit("change");
+        value: function (val) {
+            if(this.view === 'input') {
+                this.$emit("update:modelValue", val);
+                this.$emit("change");
+            }
+        },
+        modelValue: function (val) {
+            if(this.view === 'input'&& this.modelValue) {
+                this.value = val;
+            }
         },
     },
     props: {
@@ -127,3 +174,17 @@ export default defineComponent({
     },
 });
 </script>
+
+<style type="text/scss">
+.multiselect__tag{
+    background: theme('colors.primary.200') !important;
+    color: theme('colors.primary.600') !important;
+}
+.multiselect__tag-icon {
+    background: theme('colors.primary.200') !important;
+    color: theme('colors.primary.600') !important;
+}
+.multiselect__option--highlight {
+    background: theme('colors.primary.600') !important;
+}
+</style>

@@ -10,10 +10,8 @@
             :name="row.name"
             :id="row.name"
             :disabled="row.disabled"
-            :value="modelValue"
             v-model="value"
             :placeholder="row.placeholder"
-            @input="$emit('update:modelValue', value)"
             class="block my-2 w-full transition duration-75 rounded-lg shadow-sm focus:border-primary-500 focus:ring-1 focus:ring-inset focus:ring-primary-500 disabled:opacity-70 dark:bg-gray-700 dark:text-white dark:focus:border-primary-500 border-gray-300 dark:border-gray-600"
             :class="{'border-danger-600 ring-danger-600' : message}"
         />
@@ -29,7 +27,7 @@
         </div>
     </div>
     <div v-if="view === 'table'">
-        <p v-if="row.badge" class="inline-flex items-center justify-center ml-auto rtl:ml-0 rtl:mr-auto min-h-4 px-2 py-0.5 text-sm font-medium tracking-tight rounded-xl whitespace-normal " :class="row.color?'text-'+row.color+'-700 dark:text-'+row.color+'-500 bg-'+row.color+'-500/10': 'text-primary-700 dark:text-primary-500 text-primary-500/10' ">
+        <p v-if="row.badge" class="inline-flex items-center justify-center ml-auto rtl:ml-0 rtl:mr-auto min-h-4 px-2 py-0.5 text-sm font-medium tracking-tight rounded-xl whitespace-normal " :class="row.color?'text-'+row.color+'-600 dark:text-'+row.color+'-600 bg-'+row.color+'-200': 'bg-primary-200 dark:text-primary-500 text-primary-600' ">
             <span v-if="row.max">
                 {{modelValue.split(' ').slice(0, row.max).join('  ') +'...'}}
             </span>
@@ -37,6 +35,10 @@
                 {{modelValue}}
             </span>
         </p>
+        <a v-else-if="row.url" :href="modelValue" target="_blank" class="inline-flex items-center justify-center ml-auto rtl:ml-0 rtl:mr-auto min-h-4 px-2 py-0.5 text-sm font-medium tracking-tight rounded-xl whitespace-normal bg-primary-200 dark:text-primary-500 text-primary-600" >
+            <i class="bx bx-link"></i>
+            Open URL
+        </a>
         <p v-else>{{ modelValue }}</p>
     </div>
 </template>
@@ -69,13 +71,28 @@ export default defineComponent({
             value: ""
         }
     },
+    watch: {
+        value: function (val) {
+            if(this.view === 'input') {
+                this.$emit("update:modelValue", val);
+            }
+        },
+        modelValue: function (val) {
+            if(this.view === 'input'&& this.modelValue) {
+                this.value = val;
+            }
+        },
+    },
     mounted(){
         if(this.modelValue){
             this.value = this.modelValue
         }
-        if(this.row.default && !this.modelValue){
-            this.value = this.row.default
+        else {
+            if(this.row.default){
+                this.value = this.row.default
+            }
         }
+
     },
 });
 </script>

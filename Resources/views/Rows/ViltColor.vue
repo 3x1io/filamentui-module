@@ -44,16 +44,24 @@ export default defineComponent({
         if (this.modelValue) {
             this.value = this.modelValue;
         }
-        if (this.row.default) {
-            this.value = this.row.default;
+        else {
+            if (this.row.default) {
+                this.value = this.row.default;
+            }
         }
     },
-    watch:{
-        value(oldValue, newValue){
-            this.$emit('update:modelValue', this.value)
-        }
+    watch: {
+        value: function (val) {
+            if(this.view === 'input') {
+                this.$emit("update:modelValue", val);
+            }
+        },
+        modelValue: function (val) {
+            if(this.view === 'input'&& this.modelValue) {
+                this.value = val;
+            }
+        },
     },
-
     props: {
         modelValue: {},
         row: {
