@@ -23,11 +23,11 @@
                     <img class="option__image w-8" v-if="props.option.media" :src="props.option.media" alt="No Man’s Sky">
                     <span class="option__desc">
                         <span class="option__title">
-                            {{ props.option.name }}
+                            {{ transItem(props.option, 'name') }}
                         </span>
                         <br>
                         <span class="option__small text-sm text-gray-400" v-if="props.option.description">
-                            {{ props.option.description }}
+                            {{ transItem(props.option, 'description') }}
                         </span>
                     </span>
                 </div>
@@ -37,11 +37,11 @@
                     <img class="option__image w-8" v-if="props.option.media" :src="props.option.media" :alt="props.option.name">
                     <div class="option__desc">
                         <span class="option__title">
-                            {{ props.option.name }}
+                            {{ transItem(props.option, 'name') }}
                         </span>
                         <br>
                         <span class="option__small text-sm text-gray-400" v-if="props.option.description">
-                            {{ props.option.description }}
+                            {{ transItem(props.option, 'description') }}
                         </span>
                     </div>
                 </div>
@@ -55,11 +55,11 @@
             <p class="font-bold capitalize">{{ row.label ? row.label: row.name }}</p>
         </div>
         <div>
-            <p>{{ modelValue[row.trackByName] ? modelValue[row.trackByName]: 'Not Selected'  }}</p>
+            <p>{{ modelValue[row.trackByName] ? transItem(modelValue, row.trackByName): 'Not Selected'  }}</p>
         </div>
     </div>
     <div v-if="view === 'table' && modelValue">
-        <p>{{ modelValue[row.trackByName] ? modelValue[row.trackByName]: 'Not Selected' }}</p>
+        <p>{{ modelValue[row.trackByName] ? transItem(modelValue, row.trackByName): 'Not Selected' }}</p>
     </div>
 </template>
 
@@ -137,6 +137,24 @@ export default defineComponent({
         },
     },
     methods: {
+        transItem(item, key) {
+            if (
+                item[key] &&
+                item[key].hasOwnProperty("ar") &&
+                item[key].hasOwnProperty("en")
+            ) {
+                if (localStorage.getItem("lang")) {
+                    let lang = JSON.parse(localStorage.getItem("lang"));
+                    if (lang.id === "ar") {
+                        return item[key].en;
+                    } else if (lang.id === "en") {
+                        return item[key].ar;
+                    }
+                }
+            } else {
+                return item[key];
+            }
+        },
         asyncFind(query, key = null) {
             this.isLoading = true;
             let _this = this;

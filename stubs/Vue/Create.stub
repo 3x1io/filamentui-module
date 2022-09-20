@@ -76,6 +76,7 @@ layoutStore.setBreadcrumbs({
                     :key="key"
                     class=""
                 >
+
                     <ViltText v-if="item.vue === 'ViltText.vue'" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
                     <ViltEmail v-if="item.vue === 'ViltEmail.vue' " :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
                     <ViltTel v-if="item.vue === 'ViltTel.vue' " :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
