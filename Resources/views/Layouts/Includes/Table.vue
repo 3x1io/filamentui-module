@@ -1,23 +1,6 @@
 <script setup>
 import { computed, ref } from 'vue';
 import { useReload } from '@@/Composables/useReload';
-import ViltText from '$$/ViltText.vue';
-import ViltTel from '$$/ViltTel.vue';
-import ViltTextArea from '$$/ViltTextArea.vue';
-import ViltNumber from '$$/ViltNumber.vue';
-import ViltSelect from '$$/ViltSelect.vue';
-import ViltSwitch from '$$/ViltSwitch.vue';
-import ViltColor from '$$/ViltColor.vue';
-import ViltEmail from '$$/ViltEmail.vue';
-import ViltDate from '$$/ViltDate.vue';
-import ViltDateTime from '$$/ViltDateTime.vue';
-import ViltTime from '$$/ViltTime.vue';
-import ViltMedia from '$$/ViltMedia.vue';
-import ViltRepeater from '$$/ViltRepeater.vue';
-import ViltSchema from '$$/ViltSchema.vue';
-import ViltRich from '$$/ViltRich.vue';
-import ViltRelation from '$$/ViltRelation.vue';
-import ViltHasOne from '$$/ViltHasOne.vue';
 import { useCookies } from 'vue3-cookies';
 import { storeToRefs } from 'pinia';
 import {useTrans} from "@@/Composables/useTrans";
@@ -225,7 +208,7 @@ let filterData = computed(()=>{
                         />
                     </th>
                     <th
-                        class="filament-tables-header-cell p-0"
+                        class="filament-tables-header-cell p-0 capitalize"
                         v-for="(item, key) in listRows"
                         :key="key"
                     >
@@ -241,7 +224,7 @@ let filterData = computed(()=>{
                             }"
                             class="flex items-center w-full px-4 py-2 whitespace-nowrap space-x-1 rtl:space-x-reverse font-medium text-sm text-gray-600 dark:text-gray-300 "
                         >
-                            <span>{{ item.label ? item.label : item.name }}</span>
+                            <span class="capitalize">{{ item.label ? item.label : item.name }}</span>
                             <svg v-if="store.orderBy !== item.name" class="filament-tables-header-cell-sort-icon h-3 w-3 dark:text-gray-300 opacity-25" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                 <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
                             </svg>
@@ -254,7 +237,7 @@ let filterData = computed(()=>{
                         </button>
                         <span
                             v-else
-                            class="flex items-center w-full px-4 py-2 space-x-1 text-sm font-normal cursor-default dark:text-white whitespace-nowrap rtl:space-x-reverse"
+                            class="flex items-center w-full px-4 py-2 whitespace-nowrap space-x-1 rtl:space-x-reverse font-medium text-sm text-gray-600 dark:text-gray-300 "
                         >
                             {{ item.label ? item.label : item.name }}
                         </span>
@@ -284,115 +267,17 @@ let filterData = computed(()=>{
                         />
                     </th>
                     <td
-                        class="filament-tables-cell dark:text-white px-4"
                         v-for="(field, index) in listRows"
                         :key="index"
+                        @click.prevent="props.roles.edit ? editItem(item) : null"
+                        class="w-full px-2 cursor-pointer"
                     >
-                        <ViltText
-                            v-if="field.vue === 'ViltText.vue'"
+                        <Component
+                            :is="field.vue.replace('.vue', '')"
                             :row="field"
                             v-model="item[field.name]"
                             view="table"
                         />
-                        <ViltEmail
-                            v-if="field.vue === 'ViltEmail.vue'"
-                            :row="field"
-                            v-model="item[field.name]"
-                            view="table"
-                        />
-                        <ViltTel
-                            v-if="field.vue === 'ViltTel.vue'"
-                            :row="field"
-                            v-model="item[field.name]"
-                            view="table"
-                        />
-                        <ViltTextArea
-                            v-if="field.vue === 'ViltTextArea.vue'"
-                            :row="field"
-                            v-model="item[field.name]"
-                            view="table"
-                        />
-                        <ViltNumber
-                            v-if="field.vue === 'ViltNumber.vue'"
-                            :row="field"
-                            v-model="item[field.name]"
-                            view="table"
-                        />
-                        <ViltSelect
-                            v-if="field.vue === 'ViltSelect.vue'"
-                            :row="field"
-                            v-model="item[field.name]"
-                            view="table"
-                        />
-                        <ViltSwitch
-                            v-if="field.vue === 'ViltSwitch.vue'"
-                            :row="field"
-                            v-model="item[field.name]"
-                            view="table"
-                        />
-                        <ViltColor
-                            v-if="field.vue === 'ViltColor.vue'"
-                            :row="field"
-                            v-model="item[field.name]"
-                            view="table"
-                        />
-                        <ViltDate
-                            v-if="field.vue === 'ViltDate.vue'"
-                            :row="field"
-                            v-model="item[field.name]"
-                            view="table"
-                        />
-                        <ViltDateTime
-                            v-if="field.vue === 'ViltDateTime.vue'"
-                            :row="field"
-                            v-model="item[field.name]"
-                            view="table"
-                        />
-                        <ViltTime
-                            v-if="field.vue === 'ViltTime.vue'"
-                            :row="field"
-                            v-model="item[field.name]"
-                            view="table"
-                        />
-                        <ViltMedia
-                            v-if="field.vue === 'ViltMedia.vue'"
-                            @popUp="popUp"
-                            :row="field"
-                            v-model="item[field.name]"
-                            view="table"
-                        />
-                        <ViltRepeater
-                            v-if="field.vue === 'ViltRepeater.vue'"
-                            :row="field"
-                            v-model="item[field.name]"
-                            view="table"
-                        />
-                        <ViltSchema
-                            v-if="field.vue === 'ViltSchema.vue'"
-                            :row="field"
-                            v-model="item[field.name]"
-                            view="table"
-                        />
-                        <ViltRich
-                            v-if="field.vue === 'ViltRich.vue'"
-                            :row="field"
-                            v-model="item[field.name]"
-                            view="table"
-                        />
-                        <ViltRelation
-                            v-if="field.vue === 'ViltRelation.vue'"
-                            :row="field"
-                            v-model="item[field.name]"
-                            view="table"
-                        />
-                        <ViltHasOne
-                            v-if="field.vue === 'ViltHasOne.vue'"
-                            :row="field"
-                            v-model="item[field.name]"
-                            view="table"
-                        />
-
-
                         <slot name="td"></slot>
                     </td>
 
@@ -483,3 +368,45 @@ let filterData = computed(()=>{
         </div>
     </div>
 </template>
+
+<script>
+import ViltText from '$$/ViltText.vue';
+import ViltTel from '$$/ViltTel.vue';
+import ViltTextArea from '$$/ViltTextArea.vue';
+import ViltNumber from '$$/ViltNumber.vue';
+import ViltSelect from '$$/ViltSelect.vue';
+import ViltSwitch from '$$/ViltSwitch.vue';
+import ViltColor from '$$/ViltColor.vue';
+import ViltEmail from '$$/ViltEmail.vue';
+import ViltDate from '$$/ViltDate.vue';
+import ViltDateTime from '$$/ViltDateTime.vue';
+import ViltTime from '$$/ViltTime.vue';
+import ViltMedia from '$$/ViltMedia.vue';
+import ViltRepeater from '$$/ViltRepeater.vue';
+import ViltSchema from '$$/ViltSchema.vue';
+import ViltRich from '$$/ViltRich.vue';
+import ViltRelation from '$$/ViltRelation.vue';
+import ViltHasOne from '$$/ViltHasOne.vue';
+
+export  default {
+    components: {
+        ViltText,
+        ViltTel,
+        ViltTextArea,
+        ViltNumber,
+        ViltSelect,
+        ViltSwitch,
+        ViltColor,
+        ViltEmail,
+        ViltDate,
+        ViltDateTime,
+        ViltTime,
+        ViltMedia,
+        ViltRepeater,
+        ViltSchema,
+        ViltRich,
+        ViltRelation,
+        ViltHasOne
+    }
+}
+</script>

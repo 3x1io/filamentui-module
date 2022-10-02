@@ -77,8 +77,8 @@ onMounted(() => {
 <template>
     <div class="p-2 dark:border-gray-700">
         <nav role="navigation" aria-label="Pagination Navigation" class="filament-tables-pagination flex items-center justify-between">
-            <div class="hidden flex-1 items-center lg:grid grid-cols-3">
-                <div class="flex items-center">
+            <div class="mx-auto flex-1 items-center lg:grid grid-cols-3">
+                <div class="flex items-center justify-center lg:justify-start my-4 mx-4">
                     <div class="pl-2 text-sm font-medium dark:text-white">
                         {{ trans('global.show') }} {{ collection.from }}
                         {{ trans('global.to') }} {{ collection.to }}
@@ -88,7 +88,7 @@ onMounted(() => {
                     </div>
                 </div>
 
-                <div class="flex items-center justify-center">
+                <div class="flex items-center justify-center  my-4 mx-4">
                     <div class="flex items-center space-x-2 filament-tables-pagination-records-per-page-selector rtl:space-x-reverse">
                         <select
                             v-model="per_page"
@@ -107,7 +107,7 @@ onMounted(() => {
                     </div>
                 </div>
 
-                <div class="flex items-center justify-end" v-show="collection.total > collection.per_page">
+                <div class="flex items-center justify-center lg:justify-end  my-4 mx-4" v-show="collection.total > collection.per_page">
                     <div class="py-3 border rounded-lg dark:border-gray-600">
                         <ol class="flex items-center text-sm text-gray-500 divide-x rtl:divide-x-reverse divide-gray-300 dark:text-gray-400 dark:divide-gray-600">
 

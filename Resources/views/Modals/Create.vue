@@ -8,23 +8,7 @@ import JetInputError from "@@/Jetstream/InputError.vue";
 import JetLabel from "@@/Jetstream/Label.vue";
 import { Tabs, Tab } from "vue3-tabs-component";
 import {computed, onMounted, onUpdated, ref, watch} from "vue";
-import ViltText from '$$/ViltText.vue'
-import ViltTel from '$$/ViltTel.vue'
-import ViltTextArea from "$$/ViltTextArea.vue";
-import ViltNumber from "$$/ViltNumber.vue";
-import ViltSelect from "$$/ViltSelect.vue";
-import ViltSwitch from "$$/ViltSwitch.vue";
-import ViltColor from "$$/ViltColor.vue";
-import ViltEmail from "$$/ViltEmail.vue";
-import ViltDate from "$$/ViltDate.vue";
-import ViltDateTime from "$$/ViltDateTime.vue";
-import ViltTime from "$$/ViltTime.vue";
-import ViltMedia from "$$/ViltMedia.vue";
-import ViltRepeater from "$$/ViltRepeater.vue";
-import ViltSchema from "$$/ViltSchema.vue";
-import ViltRich from "$$/ViltRich.vue";
-import ViltRelation from "$$/ViltRelation.vue";
-import ViltHasOne from "$$/ViltHasOne.vue";
+import ViltForm from '$$/ViltForm.vue'
 import {Inertia} from "@inertiajs/inertia";
 import {createToaster} from "@meforma/vue-toaster";
 import {useTrans} from "@@/Composables/useTrans";
@@ -117,6 +101,7 @@ onMounted(()=>{
 Methods
  */
 function close(){
+    form.value = ref({})
     showModal.value = false;
     emit('close');
 }
@@ -246,30 +231,7 @@ function updateRecord(id) {
                 >
                     <slot name="create-top"></slot>
 
-                    <div
-                        v-for="(item, key) in rowFilterCreate"
-                        :key="key"
-                        class=""
-                    >
-                        <ViltText v-if="item.vue === 'ViltText.vue' && item.create && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltEmail v-if="item.vue === 'ViltEmail.vue' && item.create && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltTel v-if="item.vue === 'ViltTel.vue' && item.create && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltTextArea v-if="item.vue === 'ViltTextArea.vue' && item.create && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltNumber v-if="item.vue === 'ViltNumber.vue' && item.create && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltSelect v-if="item.vue === 'ViltSelect.vue' && item.create && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltSwitch v-if="item.vue === 'ViltSwitch.vue' && item.create && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltColor v-if="item.vue === 'ViltColor.vue' && item.create && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltDate v-if="item.vue === 'ViltDate.vue' && item.create && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltDateTime v-if="item.vue === 'ViltDateTime.vue' && item.create && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltTime v-if="item.vue === 'ViltTime.vue' && item.create && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltMedia v-if="item.vue === 'ViltMedia.vue' && item.create && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltRepeater v-if="item.vue === 'ViltRepeater.vue' && item.create && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltSchema v-if="item.vue === 'ViltSchema.vue' && item.create && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltRich v-if="item.vue === 'ViltRich.vue' && item.create && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltRelation v-if="item.vue === 'ViltRelation.vue' && item.create && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltHasOne v-if="item.vue === 'ViltHasOne.vue' && item.create && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-
-                    </div>
+                    <ViltForm :rows="rowFilterCreate" :errors="props.errors" v-model="form" />
                     <slot name="create"></slot>
                 </form>
                 <form
@@ -278,29 +240,7 @@ function updateRecord(id) {
                     v-else
                 >
                     <slot name="edit-top"></slot>
-                    <div
-                        v-for="(item, key) in rowFilterEdit"
-                        :key="key"
-                        class=""
-                    >
-                        <ViltText v-if="item.vue === 'ViltText.vue' && item.edit && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltEmail v-if="item.vue === 'ViltEmail.vue' && item.edit && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltTel v-if="item.vue === 'ViltTel.vue' && item.edit && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltTextArea v-if="item.vue === 'ViltTextArea.vue' && item.edit && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltNumber v-if="item.vue === 'ViltNumber.vue' && item.edit && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltSelect v-if="item.vue === 'ViltSelect.vue' && item.edit && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltSwitch v-if="item.vue === 'ViltSwitch.vue' && item.edit && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltColor v-if="item.vue === 'ViltColor.vue' && item.edit && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltDate v-if="item.vue === 'ViltDate.vue' && item.edit && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltDateTime v-if="item.vue === 'ViltDateTime.vue' && item.edit && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltTime v-if="item.vue === 'ViltTime.vue' && item.edit && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltMedia v-if="item.vue === 'ViltMedia.vue' && item.edit && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltRepeater v-if="item.vue === 'ViltRepeater.vue' && item.edit && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltSchema v-if="item.vue === 'ViltSchema.vue' && item.edit && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltRich v-if="item.vue === 'ViltRich.vue' && item.edit && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltRelation v-if="item.vue === 'ViltRelation.vue' && item.edit && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltHasOne v-if="item.vue === 'ViltHasOne.vue' && item.edit && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                    </div>
+                    <ViltForm :rows="rowFilterEdit" :edit="true" :errors="props.errors" v-model="form" />
                     <slot name="edit"></slot>
                 </form>
             </div>
@@ -330,29 +270,7 @@ function updateRecord(id) {
                             v-if="!props.edit"
                         >
                             <slot name="create-top"></slot>
-                            <div
-                                v-for="(item, key) in rowFilterCreate"
-                                :key="key"
-                                class=""
-                            >
-                                <ViltText v-if="item.vue === 'ViltText.vue' && item.create && item.tab === tab.name && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                                <ViltEmail v-if="item.vue === 'ViltEmail.vue' && item.create && item.tab === tab.name && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                                <ViltTel v-if="item.vue === 'ViltTel.vue' && item.create && item.tab === tab.name && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                                <ViltTextArea v-if="item.vue === 'ViltTextArea.vue' && item.create && item.tab === tab.name && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                                <ViltNumber v-if="item.vue === 'ViltNumber.vue' && item.create && item.tab === tab.name && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                                <ViltSelect v-if="item.vue === 'ViltSelect.vue' && item.create && item.tab === tab.name && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                                <ViltSwitch v-if="item.vue === 'ViltSwitch.vue' && item.create && item.tab === tab.name && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                                <ViltColor v-if="item.vue === 'ViltColor.vue' && item.create && item.tab === tab.name && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                                <ViltDate v-if="item.vue === 'ViltDate.vue' && item.create && item.tab === tab.name && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                                <ViltDateTime v-if="item.vue === 'ViltDateTime.vue' && item.create && item.tab === tab.name && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                                <ViltTime v-if="item.vue === 'ViltTime.vue' && item.create && item.tab === tab.name && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                                <ViltMedia v-if="item.vue === 'ViltMedia.vue' && item.create && item.tab === tab.name && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                                <ViltRepeater v-if="item.vue === 'ViltRepeater.vue' && item.create && item.tab === tab.name && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                                <ViltSchema v-if="item.vue === 'ViltSchema.vue' && item.create && item.tab === tab.name && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                                <ViltRich v-if="item.vue === 'ViltRich.vue' && item.create && item.tab === tab.name && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                                <ViltRelation v-if="item.vue === 'ViltRelation.vue' && item.create && item.tab === tab.name && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                                <ViltHasOne v-if="item.vue === 'ViltHasOne.vue' && item.create && item.tab === tab.name && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                            </div>
+                            <ViltForm :rows="rowFilterCreate" :errors="props.errors" v-model="form" />
                             <slot name="create"></slot>
                         </form>
                         <form
@@ -361,30 +279,7 @@ function updateRecord(id) {
                             v-else
                         >
                             <slot name="edit-top"></slot>
-                            <div
-                                v-for="(item, key) in rowFilterEdit"
-                                :key="key"
-                                class=""
-                            >
-                                <ViltText v-if="item.vue === 'ViltText.vue' && item.edit && item.tab === tab.name && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                                <ViltEmail v-if="item.vue === 'ViltEmail.vue' && item.edit && item.tab === tab.name && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                                <ViltTel v-if="item.vue === 'ViltTel.vue' && item.edit && item.tab === tab.name && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                                <ViltTextArea v-if="item.vue === 'ViltTextArea.vue' && item.edit && item.tab === tab.name && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                                <ViltNumber v-if="item.vue === 'ViltNumber.vue' && item.edit && item.tab === tab.name && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                                <ViltSelect v-if="item.vue === 'ViltSelect.vue' && item.edit && item.tab === tab.name && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                                <ViltSwitch v-if="item.vue === 'ViltSwitch.vue' && item.edit && item.tab === tab.name && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                                <ViltColor v-if="item.vue === 'ViltColor.vue' && item.edit && item.tab === tab.name && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                                <ViltDate v-if="item.vue === 'ViltDate.vue' && item.edit && item.tab === tab.name && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                                <ViltDateTime v-if="item.vue === 'ViltDateTime.vue' && item.edit && item.tab === tab.name && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                                <ViltTime v-if="item.vue === 'ViltTime.vue' && item.edit && item.tab === tab.name && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                                <ViltMedia v-if="item.vue === 'ViltMedia.vue' && item.edit && item.tab === tab.name && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                                <ViltRepeater v-if="item.vue === 'ViltRepeater.vue' && item.edit && item.tab === tab.name && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                                <ViltSchema v-if="item.vue === 'ViltSchema.vue' && item.edit && item.tab === tab.name && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                                <ViltRich v-if="item.vue === 'ViltRich.vue' && item.edit && item.tab === tab.name && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                                <ViltRelation v-if="item.vue === 'ViltRelation.vue' && item.edit && item.tab === tab.name && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                                <ViltHasOne v-if="item.vue === 'ViltHasOne.vue' && item.edit && item.tab === tab.name && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-
-                            </div>
+                            <ViltForm :rows="rowFilterEdit" :edit="true"  :errors="props.errors" v-model="form" />
                             <slot name="edit"></slot>
                         </form>
                     </Tab>
@@ -395,56 +290,12 @@ function updateRecord(id) {
                     v-if="!props.edit"
                 >
                     <slot name="create-top"></slot>
-                    <div
-                        v-for="(item, key) in rowFilterCreate"
-                        :key="key"
-                        class=""
-                    >
-                        <ViltText v-if="item.vue === 'ViltText.vue' && item.create && item.tab === null && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltEmail v-if="item.vue === 'ViltEmail.vue' && item.create && item.tab === null && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltTel v-if="item.vue === 'ViltTel.vue' && item.create && item.tab === null && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltTextArea v-if="item.vue === 'ViltTextArea.vue' && item.create && item.tab === null && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltNumber v-if="item.vue === 'ViltNumber.vue' && item.create && item.tab === null && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltSelect v-if="item.vue === 'ViltSelect.vue' && item.create && item.tab === null && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltSwitch v-if="item.vue === 'ViltSwitch.vue' && item.create && item.tab === null && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltColor v-if="item.vue === 'ViltColor.vue' && item.create && item.tab === null && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltDate v-if="item.vue === 'ViltDate.vue' && item.create && item.tab === null && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltDateTime v-if="item.vue === 'ViltDateTime.vue' && item.create && item.tab === null && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltTime v-if="item.vue === 'ViltTime.vue' && item.create && item.tab === null && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltMedia v-if="item.vue === 'ViltMedia.vue' && item.create && item.tab === null && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltRepeater v-if="item.vue === 'ViltRepeater.vue' && item.create && item.tab === null && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltSchema v-if="item.vue === 'ViltSchema.vue' && item.create && item.tab === null && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltRich v-if="item.vue === 'ViltRich.vue' && item.create && item.tab === null && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltRelation v-if="item.vue === 'ViltRelation.vue' && item.create && item.tab === null && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltHasOne v-if="item.vue === 'ViltHasOne.vue' && item.create && item.tab === null && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                    </div>
+                    <ViltForm :rows="rowFilterCreate" :errors="props.errors" v-model="form" />
                     <slot name="create"></slot>
                 </form>
                 <form class="grid grid-cols-1 md:grid-cols-1" action="" v-else>
                     <slot name="edit-top"></slot>
-                    <div
-                        v-for="(item, key) in rowFilterEdit"
-                        :key="key"
-                        class=""
-                    >
-                        <ViltText v-if="item.vue === 'ViltText.vue' && item.edit && item.tab === null && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltEmail v-if="item.vue === 'ViltEmail.vue' && item.edit && item.tab === null && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltTel v-if="item.vue === 'ViltTel.vue' && item.edit && item.tab === null && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltTextArea v-if="item.vue === 'ViltTextArea.vue' && item.edit && item.tab === null && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltNumber v-if="item.vue === 'ViltNumber.vue' && item.edit && item.tab === null && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltSelect v-if="item.vue === 'ViltSelect.vue' && item.edit && item.tab === null && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltSwitch v-if="item.vue === 'ViltSwitch.vue' && item.edit && item.tab === null && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltColor v-if="item.vue === 'ViltColor.vue' && item.edit && item.tab === null && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltDate v-if="item.vue === 'ViltDate.vue' && item.edit && item.tab === null && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltDateTime v-if="item.vue === 'ViltDateTime.vue' && item.edit && item.tab === null && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltTime v-if="item.vue === 'ViltTime.vue' && item.edit && item.tab === null && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltMedia v-if="item.vue === 'ViltMedia.vue' && item.edit && item.tab === null && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltRepeater v-if="item.vue === 'ViltRepeater.vue' && item.edit && item.tab === null && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltSchema v-if="item.vue === 'ViltSchema.vue' && item.edit && item.tab === null && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltRich v-if="item.vue === 'ViltRich.vue' && item.edit && item.tab === null && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltRelation v-if="item.vue === 'ViltRelation.vue' && item.edit && item.tab === null && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                        <ViltHasOne v-if="item.vue === 'ViltHasOne.vue' && item.edit && item.tab === null && reactiveItem[item.name]" :message="props.errors[item.name]" :row="item" v-model="form[item.name]"/>
-                    </div>
+                    <ViltForm :rows="rowFilterEdit" :edit="true"  :errors="props.errors" v-model="form" />
                     <slot name="edit"></slot>
                 </form>
             </div>

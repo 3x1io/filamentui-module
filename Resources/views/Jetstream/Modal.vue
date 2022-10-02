@@ -1,12 +1,12 @@
 <template>
     <teleport to="body">
-        <transition leave-active-class="duration-300">
+        <transition leave-active-class="duration-200">
             <div v-show="show" class="fixed inset-0 z-40 flex min-h-screen overflow-y-auto transition p-4" :class="{'items-center':maxWidth==='sm', 'items-start':maxWidth==='2xl'}" scroll-region>
                 <transition
-                        enter-active-class="ease-in duration-300"
+                        enter-active-class="ease-in duration-150"
                         enter-from-class="opacity-0"
                         enter-to-class="opacity-100"
-                        leave-active-class="ease-out duration-300"
+                        leave-active-class="ease-out duration-150"
                         leave-from-class="opacity-100"
                         leave-to-class="opacity-0">
                     <div v-show="show" class="filament-modal-close-overlay fixed inset-0 w-full h-full bg-black/50 cursor-pointer" @click="close">
@@ -15,12 +15,13 @@
                 </transition>
 
                 <transition
-                        enter-active-class="ease-in duration-300"
-                        enter-from-class="translate-y-8"
-                        enter-to-class="translate-y-0"
-                        leave-active-class="ease-out duration-300"
-                        leave-from-class="translate-y-8"
-                        leave-to-class="translate-y-0">
+                        enter-active-class="ease-in duration-150"
+                        enter-from-class="opacity-0"
+                        enter-to-class="opacity-100"
+                        leave-active-class="ease-out duration-150"
+                        leave-from-class="opacity-0"
+                        leave-to-class="opacity-100"
+                >
                     <div v-show="show" class="
                     transition-all
                     transform

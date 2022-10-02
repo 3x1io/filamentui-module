@@ -1,118 +1,7 @@
 <template>
     <div>
         <div v-for="(item, key) in rows" :key="key">
-            <ViltText
-                v-if="item.vue === 'ViltText.vue'"
-                :message="errors[item.name]"
-                @update:modelValue="update"
-                :row="item"
-                v-model="form[item.name]"
-            />
-            <ViltEmail
-                v-if="item.vue === 'ViltEmail.vue'"
-                :message="errors[item.name]"
-                @update:modelValue="update"
-                :row="item"
-                v-model="form[item.name]"
-            />
-            <ViltTel
-                v-if="item.vue === 'ViltTel.vue'"
-                :message="errors[item.name]"
-                @update:modelValue="update"
-                :row="item"
-                v-model="form[item.name]"
-            />
-            <ViltTextArea
-                v-if="item.vue === 'ViltTextArea.vue'"
-                :message="errors[item.name]"
-                @update:modelValue="update"
-                :row="item"
-                v-model="form[item.name]"
-            />
-            <ViltNumber
-                v-if="item.vue === 'ViltNumber.vue'"
-                :message="errors[item.name]"
-                @update:modelValue="update"
-                :row="item"
-                v-model="form[item.name]"
-            />
-            <ViltSelect
-                v-if="item.vue === 'ViltSelect.vue'"
-                :message="errors[item.name]"
-                @update:modelValue="update"
-                :row="item"
-                v-model="form[item.name]"
-            />
-            <ViltSwitch
-                v-if="item.vue === 'ViltSwitch.vue'"
-                :message="errors[item.name]"
-                @update:modelValue="update"
-                :row="item"
-                v-model="form[item.name]"
-            />
-            <ViltColor
-                v-if="item.vue === 'ViltColor.vue'"
-                :message="errors[item.name]"
-                @update:modelValue="update"
-                :row="item"
-                v-model="form[item.name]"
-            />
-            <ViltDate
-                v-if="item.vue === 'ViltDate.vue'"
-                :message="errors[item.name]"
-                @update:modelValue="update"
-                :row="item"
-                v-model="form[item.name]"
-            />
-            <ViltDateTime
-                v-if="item.vue === 'ViltDateTime.vue'"
-                :message="errors[item.name]"
-                @update:modelValue="update"
-                :row="item"
-                v-model="form[item.name]"
-            />
-            <ViltTime
-                v-if="item.vue === 'ViltTime.vue'"
-                :message="errors[item.name]"
-                @update:modelValue="update"
-                :row="item"
-                v-model="form[item.name]"
-            />
-            <ViltMedia
-                v-if="item.vue === 'ViltMedia.vue'"
-                :message="errors[item.name]"
-                @update:modelValue="update"
-                :row="item"
-                v-model="form[item.name]"
-            />
-            <ViltRepeater
-                v-if="item.vue === 'ViltRepeater.vue'"
-                :message="errors[item.name]"
-                @update:modelValue="update"
-                :row="item"
-                v-model="form[item.name]"
-            />
-            <ViltSchema
-                v-if="item.vue === 'ViltSchema.vue'"
-                :message="errors[item.name]"
-                @update:modelValue="update"
-                :row="item"
-                v-model="form[item.name]"
-            />
-            <ViltRich
-                v-if="item.vue === 'ViltRich.vue'"
-                :message="errors[item.name]"
-                @update:modelValue="update"
-                :row="item"
-                v-model="form[item.name]"
-            />
-            <ViltRelation
-                v-if="item.vue === 'ViltRelation.vue'"
-                :message="errors[item.name]"
-                @update:modelValue="update"
-                :row="item"
-                v-model="form[item.name]"
-            />
+            <Component :is="item.vue.replace('.vue', '')" :row="item" :view="view" @update:modelValue="update" v-model="form[item.name]" :message="errors[item.name]"></Component>
         </div>
     </div>
 </template>
@@ -136,6 +25,7 @@ import ViltRepeater from '$$/ViltRepeater.vue';
 import ViltSchema from '$$/ViltSchema.vue';
 import ViltRich from '$$/ViltRich.vue';
 import ViltRelation from '$$/ViltRelation.vue';
+import ViltHasOne from '$$/ViltHasOne.vue';
 
 export default defineComponent({
     components: {
@@ -156,6 +46,7 @@ export default defineComponent({
         ViltSchema,
         ViltRich,
         ViltRelation,
+        ViltHasOne,
     },
     data() {
         return {
@@ -179,6 +70,10 @@ export default defineComponent({
         value: {
             Object,
             default: {},
+        },
+        view: {
+            String,
+            default: "input",
         },
     },
     computed:{
@@ -208,6 +103,11 @@ export default defineComponent({
         }
         else {
             this.form = this.getRows;
+        }
+    },
+    beforeUpdate() {
+        if(this.edit){
+            this.form = this.modelValue
         }
     },
     methods: {

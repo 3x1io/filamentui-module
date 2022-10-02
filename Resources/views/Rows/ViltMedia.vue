@@ -46,7 +46,7 @@
         </div>
         <div>
             <div v-if="modelValue">
-                <div v-if="modelValue && row.multi">
+                <div v-if="row.multi">
                     <div v-for="(item, key) in modelValue" :key="key">
                         <img
                             :src="item"
@@ -70,24 +70,26 @@
         </div>
     </div>
     <div v-if="view === 'table'" class="p-4">
-        <div v-if="value && row.multi">
-            <img
-                @click.prevent="popUp"
-                :src="value[0]"
-                class="object-cover w-20 h-20 mx-auto rounded-full"
-            />
+        <div v-if="modelValue">
+            <div v-if="row.multi">
+                <div v-for="(item, key) in modelValue" :key="key">
+                    <img
+                        :src="item"
+                        class="mx-auto"
+                    />
+                </div>
+            </div>
+            <div v-else>
+                <img
+                    :src="modelValue"
+                    class="mx-auto"
+                />
+            </div>
         </div>
-        <div v-else-if="!row.multi">
-            <img
-                @click.prevent="popUp"
-                :src="value"
-                class="object-cover w-20 h-20 rounded-full border"
-            />
-        </div>
-        <div v-else>
+        <div  v-else>
             <img
                 :src="$page.props.data.appUrl + '/placeholder.webp'"
-                class="object-cover w-20 h-20 mx-auto rounded-full border"
+                class="mx-auto"
             />
         </div>
     </div>
@@ -154,6 +156,8 @@ export default defineComponent({
             }
         },
         modelValue: function (val) {
+            this.value = [];
+            this.images = [];
             if(this.view === 'input' && this.modelValue) {
                 this.value = val;
             }
@@ -185,6 +189,10 @@ export default defineComponent({
                 } else {
                     this.value.push(this.row.default);
                 }
+            }
+            else {
+                this.value = [];
+                this.images = [];
             }
         }
     },

@@ -243,6 +243,7 @@ function popUp(getImages){
 }
 
 function createItem(){
+    form.value = useForm(formMake());
     if(props.render.form.name === 'page'){
         Inertia.get(route(props.list.url + '.create'), {}, {
             preserveScroll: true,
@@ -256,6 +257,7 @@ function createItem(){
 }
 
 function editItem(item){
+    form.value = useForm(formMake());
     if(props.render.form.name === 'page'){
         Inertia.visit(route(props.list.url + '.edit', item.id))
     }
@@ -269,6 +271,7 @@ function editItem(item){
 };
 
 function viewItem(item){
+    form.value = useForm(formMake());
     if(props.render.form.name === 'page'){
         Inertia.visit(route(props.list.url + '.view', item.id))
     }
@@ -450,7 +453,21 @@ layoutStore.setBreadcrumbs({
     route: route(props.list.url +".index"),
     label: rLang.value ? rLang.value.index : ''
 });
-
+function closeModal(type){
+    form.value = useForm(formMake());
+    if(type === 'createModal'){
+        createModal.value = !createModal.value;
+    }
+    if(type === 'viewModal'){
+        viewModal.value = !viewModal.value;
+    }
+    if(type === 'deleteModal'){
+        deleteModal.value = !deleteModal.value;
+    }
+    if(type === 'bulkModal'){
+        bulkModal.value = !bulkModal.value;
+    }
+}
 </script>
 
 <template>
@@ -674,14 +691,14 @@ layoutStore.setBreadcrumbs({
         <CreateModal
             v-if="props.render.form.name !== 'page'"
             :url="props.list.url"
-            :title="edit.value ? rLang.edit_title : rLang.create_title"
+            :title="edit ? rLang.edit_title : rLang.create_title"
             :errors="props.errors"
             :show="createModal"
             :edit="edit"
             :item="form"
             :rows="props.rows"
             :type="props.render.form"
-            @close="createModal = !createModal"
+            @close="closeModal('createModal')"
             @success="success"
         />
         <ViewModal
@@ -690,14 +707,14 @@ layoutStore.setBreadcrumbs({
             :show="viewModal"
             :item="form"
             :rows="props.rows"
-            @close="viewModal = !viewModal"
+            @close="closeModal('viewModal')"
         />
         <DeleteModal
             :url="props.list.url"
             :title="rLang.delete_title"
             :show="deleteModal"
             :item="form"
-            @close="deleteModal = !deleteModal"
+            @close="closeModal('deleteModal')"
             @success="success"
         />
         <BulkModal
@@ -706,7 +723,7 @@ layoutStore.setBreadcrumbs({
             :action="bulkActionTitle"
             :bulk="bulkItems"
             :show="bulkModal"
-            @close="bulkModal = !bulkModal"
+            @close="closeModal('bulkModal')"
             @success="success"
         />
 
