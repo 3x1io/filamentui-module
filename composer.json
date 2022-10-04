@@ -32,7 +32,9 @@
         "joshbrw/laravel-module-installer": "^2.0",
         "nwidart/laravel-modules": "^9.0",
         "krlove/eloquent-model-generator": "^2.0",
-        "doctrine/dbal": "^3.4"
+        "doctrine/dbal": "^3.4",
+        "queents/vilt": "^1.0",
+        "queents/notifications-module": "^1.0"
     },
     "extra": {
         "laravel": {

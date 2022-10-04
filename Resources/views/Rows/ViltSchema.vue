@@ -122,7 +122,7 @@ export default defineComponent({
     },
     data() {
         return {
-            main: [],
+            main: {},
         };
     },
     watch:{
@@ -134,23 +134,23 @@ export default defineComponent({
         },
         deep: true
       },
-    modelValue: function (val) {
-        if(this.view === 'input' && this.modelValue) {
-            this.main = val;
-        }
-    },
+        modelValue: function (val) {
+            if(this.view === 'input' && this.modelValue) {
+                this.main = val;
+            }
+        },
     },
     mounted() {
-        this.main = this.optionRows;
-    },
-    beforeUpdate() {
         if (this.modelValue) {
             this.main = this.modelValue;
         }
         else {
-            if (this.row.default && !this.modelValue) {
-                this.main = this.row.default;
-            }
+            this.main = this.optionRows;
+        }
+    },
+    beforeUpdate() {
+        if (this.row.default) {
+            this.main = this.row.default;
         }
     },
     props: {

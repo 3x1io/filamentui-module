@@ -23,6 +23,8 @@
                         <template v-if="$page.props.jetstream.hasAccountDeletionFeatures">
                             <delete-user-form />
                         </template>
+
+                        <NotificationForm />
                     </div>
                 </template>
         </Container>
@@ -31,6 +33,7 @@
 
 <script>
     import { defineComponent } from 'vue'
+    import NotificationForm from '@@/Pages/Profile/Partials/NotificationForm.vue'
     import DeleteUserForm from '@@/Pages/Profile/Partials/DeleteUserForm.vue'
     import JetSectionBorder from '@@/Jetstream/SectionBorder.vue'
     import LogoutOtherBrowserSessionsForm from '@@/Pages/Profile/Partials/LogoutOtherBrowserSessionsForm.vue'
@@ -53,6 +56,7 @@
             TwoFactorAuthenticationForm,
             UpdatePasswordForm,
             UpdateProfileInformationForm,
+            NotificationForm,
         },
     })
 </script>

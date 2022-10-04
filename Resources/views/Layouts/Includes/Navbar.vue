@@ -4,8 +4,11 @@ import {Inertia} from "@inertiajs/inertia";
 import {useLayoutStore} from '@@/Stores/layout.js';
 import {useStyleStore} from '@@/Stores/style.js';
 import {useTrans} from '@@/Composables/useTrans'
-import {computed, onMounted} from "vue";
+import {computed, onMounted,ref} from "vue";
 import {usePage} from "@inertiajs/inertia-vue3";
+import {initializeApp} from "firebase/app";
+import {getMessaging, getToken, onMessage} from "firebase/messaging";
+import moment from "moment";
 
 const props = defineProps({
     breadcrumbs: {
@@ -14,8 +17,11 @@ const props = defineProps({
     }
 })
 
+let data = usePage().props.value.data;
+
 const {trans} = useTrans();
 
+let notifications = ref([]);
 
 const layoutStore = useLayoutStore();
 Inertia.on('navigate', () => {
@@ -86,6 +92,136 @@ onMounted(() => {
                 name: "Arabic",
             })
         );
+    }
+});
+
+function handleFirebase(permission){
+    if(data.fcm){
+        const firebaseConfig = {
+            apiKey: data.fcm.config.apiKey,
+            authDomain: data.fcm.config.authDomain,
+            projectId: data.fcm.config.projectId,
+            storageBucket: data.fcm.config.storageBucket,
+            messagingSenderId: data.fcm.config.messagingSenderId,
+            appId: data.fcm.config.appId,
+            measurementId: data.fcm.config.measurementId
+        };
+        const app = initializeApp(firebaseConfig);
+        const messaging = getMessaging(app);
+
+        if (permission === "granted") {
+            console.log("Notification permission granted.");
+            if ("serviceWorker" in navigator) {
+                navigator.serviceWorker
+                    .register("/firebase-messaging-sw.js")
+                    .then(function (registration) {
+                        console.log(
+                            "Registration successful, scope is:",
+                            registration.scope
+                        );
+                    })
+                    .catch(function (err) {
+                        console.log(
+                            "Service worker registration failed, error:",
+                            err
+                        );
+                    });
+            }
+            if(!data.token){
+                getToken(messaging, {
+                    vapidKey:data.fcm.vapidKey,
+                })
+                    .then((currentToken) => {
+                        if (currentToken) {
+                            // Send the token to your server and update the UI if necessary
+                            // ...
+                            console.log(currentToken);
+                            Inertia.post(
+                                route("admin.notifications.token"),
+                                {
+                                    token: currentToken,
+                                    provider: "fcm-web",
+                                    model: "App\\Models\\User",
+                                    model_id: usePage().props.value.user.id,
+                                },
+                                {
+                                    onSuccess: () => {
+                                        console.log(
+                                            "Registration successful"
+                                        );
+                                    },
+                                }
+                            );
+                        } else {
+                            // Show permission request UI
+                            console.log(
+                                "No registration token available. Request permission to generate one."
+                            );
+                            // ...
+                        }
+                    })
+                    .catch((err) => {
+                        console.log(
+                            "An error occurred while retrieving token. ",
+                            err
+                        );
+                        // ...
+                    });
+            }
+        }
+        else {
+            console.log("Can't Access Notifications");
+        }
+    }
+    Notification.requestPermission().then((permission) => {
+        handleFirebase(permission);
+    });
+}
+
+Notification.requestPermission().then((permission) => {
+    if (permission === "granted") {
+        const firebaseConfig = {
+            apiKey: data.fcm.config.apiKey,
+            authDomain: data.fcm.config.authDomain,
+            projectId: data.fcm.config.projectId,
+            storageBucket: data.fcm.config.storageBucket,
+            messagingSenderId: data.fcm.config.messagingSenderId,
+            appId: data.fcm.config.appId,
+            measurementId: data.fcm.config.measurementId
+        };
+        const app = initializeApp(firebaseConfig);
+        const messaging = getMessaging(app);
+
+        navigator.serviceWorker.getRegistration().then((reg) => {
+            onMessage(messaging, (payload) => {
+                // var audio = new Audio('https://devsuez.emalleg.net/storage/sound/notifications.mp3');
+                // audio.play();
+                notifications.value.unshift({
+                    title: payload.data.title,
+                    url: payload.data.url,
+                    icon: payload.data.icon,
+                    image: payload.data.image,
+                    description: payload.data.message,
+                    type: payload.data.type,
+                    date: moment().fromNow(),
+                });
+                // push notification can send event.data.json() as well
+                const options = {
+                    body: payload.data.message,
+                    icon: payload.data.image,
+                    tag: "alert",
+                };
+                let notification = reg.showNotification(
+                    payload.data.title,
+                    options
+                );
+                // link to page on clicking the notification
+                notification.onclick = (payload) => {
+                    window.open(payload.data.url);
+                };
+            });
+        });
+
     }
 });
 
@@ -234,7 +370,7 @@ onMounted(() => {
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
                                 </svg>
                                 <span class="filament-icon-button-indicator absolute rounded-full text-xs inline-block w-4 h-4 -top-0.5 -right-0.5 bg-primary-500/10">
-                                            6
+                                            {{notifications.length ? notifications.length : 0}}
                                         </span>
                             </button>
                         </div>
@@ -273,7 +409,7 @@ onMounted(() => {
                                                     </span>
                                         </button>
 
-                                        <div class="space-y-2">
+                                        <div class="space-y-2" v-if="notifications.length">
                                             <div class="filament-modal-header px-4 py-2">
                                                 <h2 class="filament-modal-heading text-xl font-bold tracking-tight relative">
                                                             <span>
@@ -281,7 +417,7 @@ onMounted(() => {
                                                             </span>
 
                                                     <span class="inline-flex absolute items-center justify-center top-0 ml-1 min-w-[1rem] h-4 rounded-full text-xs text-primary-700 bg-primary-500/10 dark:text-primary-500">
-                                                                6
+                                                                {{notifications.length ? notifications.length : 0}}
                                                             </span>
                                                 </h2>
 
@@ -315,33 +451,32 @@ onMounted(() => {
                                                 <div class="px-4 py-2 space-y-4">
                                                     <div class="mt-[calc(-1rem-1px)]">
                                                         <div class="-mx-6 border-b border-t dark:border-gray-800">
-                                                            <div class="py-2 pl-4 pr-2 bg-gray-50 -mb-px dark:bg-gray-700">
-                                                                <!--
-                                                                v-transition:enter-start="opacity-0 translate-v-12"
-                                                                     v-transition:leave-end="scale-95 opacity-0"
-
-                                                                     -->
+                                                            <div v-for="notification in notifications" class="py-2 pl-4 pr-2 bg-gray-50 -mb-px dark:bg-gray-700">
                                                                 <div
+
                                                                     class="filament-notifications-notification pointer-events-auto invisible flex gap-3 w-full transition duration-300"
                                                                     style="display: flex; visibility: visible;">
-                                                                    <svg class="filament-notifications-icon h-6 w-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+
+                                                                    <img v-if="notification.image" :src="notification.image" class="filament-notifications-icon h-6 w-6 text-gray-400"/>
+                                                                    <svg v-else class="filament-notifications-icon h-6 w-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
                                                                         <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
                                                                     </svg>
+
                                                                     <div class="grid flex-1">
                                                                         <div class="filament-notifications-title flex h-6 items-center text-sm font-medium text-gray-900 dark:text-gray-100">
-                                                                            <p>New order</p>
+                                                                            <p>{{notification.title}}</p>
                                                                         </div>
 
                                                                         <p class="filament-notifications-date text-xs text-gray-500 dark:text-gray-300">
-                                                                            14 minutes ago
+                                                                            {{notification.date}}
                                                                         </p>
 
                                                                         <div class="filament-notifications-body mt-1 text-sm text-gray-500 dark:text-gray-300">
-                                                                            <p><strong>Gracie Cruickshank ordered 3 products.</strong></p>
+                                                                            <p><strong>{{notification.description}}</strong></p>
                                                                         </div>
 
                                                                         <div class="filament-notifications-actions mt-2 flex gap-3">
-                                                                            <a class="filament-link inline-flex items-center justify-center gap-0.5 font-medium hover:underline focus:outline-none focus:underline text-sm text-primary-600 hover:text-primary-500 dark:text-primary-500 dark:hover:text-primary-400 filament-notifications-link-action" href="https://demo.filamentphp.com/shop/orders/822/edit">
+                                                                            <a class="filament-link inline-flex items-center justify-center gap-0.5 font-medium hover:underline focus:outline-none focus:underline text-sm text-primary-600 hover:text-primary-500 dark:text-primary-500 dark:hover:text-primary-400 filament-notifications-link-action" :href="notification.url">
 
                                                                                 View
 
@@ -349,7 +484,8 @@ onMounted(() => {
 
                                                                         </div>
                                                                     </div>
-                                                                    <svg  class="filament-notifications-close-button h-4 w-4 cursor-pointer text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" class="filament-notifications-close-button h-4 w-4 cursor-pointer text-gray-400">
                                                                         <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
                                                                     </svg>
                                                                 </div>
@@ -358,6 +494,35 @@ onMounted(() => {
                                                     </div>
                                                 </div>
                                             </div>
+                                        </div>
+                                        <div class="space-y-2" v-else>
+
+
+                                            <div class="filament-modal-content space-y-2">
+
+                                                <div class="px-4 py-2 space-y-4">
+                                                    <div class="flex flex-col items-center justify-center mx-auto my-6 space-y-4 text-center bg-white dark:bg-gray-800">
+                                                        <div class="flex items-center justify-center w-12 h-12 text-primary-500 rounded-full bg-primary-50 dark:bg-gray-700">
+                                                            <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                                                            </svg>    </div>
+
+                                                        <div class="max-w-md space-y-1">
+                                                            <h2 class="text-lg font-bold tracking-tight dark:text-white">
+                                                                No notifications here
+                                                            </h2>
+
+                                                            <p class="whitespace-normal text-sm font-medium text-gray-500 dark:text-gray-400">
+                                                                Please check again later
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+                                            </div>
+
+
                                         </div>
                                     </div>
                                 </div>
