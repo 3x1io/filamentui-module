@@ -23,6 +23,14 @@ THEME_MODULE=FilamentUI
 php artisan config:clear
 ```
 
+```bash
+php artisan migrate
+```
+
+```bash
+php artisan roles:generate theme
+```
+
 Publish Assets
 
 ```bash
@@ -36,6 +44,8 @@ yarn add tippy.js firebase vue-spinner
 ```bash
 yarn build
 ```
+
+
 
 ## Support
 
