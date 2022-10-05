@@ -156,11 +156,23 @@ export default defineComponent({
             }
         },
         modelValue: function (val) {
-            this.value = [];
             this.images = [];
+            this.value = [];
             if(this.view === 'input' && this.modelValue) {
-                this.value = val;
+                if(this.row.multi){
+                    this.images = val;
+                    this.value = val;
+                }
+                else {
+                    this.images = val;
+                    this.value = val;
+                }
             }
+            else {
+                this.images = [];
+                this.value = [];
+            }
+
         },
     },
     mounted() {
@@ -201,11 +213,21 @@ export default defineComponent({
             this.$refs[this.row.name].getFiles();
         },
         addNewFile(error,file){
+            // try {
+            //
+            // }catch (e){}
             this.images.push(file.file);
             this.$emit("update:modelValue", this.images);
         },
         removeFile(error,file){
-            this.images.splice(this.images.indexOf(file.file), 1);
+            if(this.row.multi){
+                this.value.splice(this.value.indexOf(file.file), 1);
+            }
+            else {
+                this.images = [];
+                this.value= [];
+            }
+
         },
         popUp(){
             if(this.row.multi){

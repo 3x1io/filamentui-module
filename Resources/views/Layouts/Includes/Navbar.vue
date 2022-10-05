@@ -179,49 +179,51 @@ function handleFirebase(permission){
 }
 
 Notification.requestPermission().then((permission) => {
-    if (permission === "granted") {
-        const firebaseConfig = {
-            apiKey: data.fcm.config.apiKey,
-            authDomain: data.fcm.config.authDomain,
-            projectId: data.fcm.config.projectId,
-            storageBucket: data.fcm.config.storageBucket,
-            messagingSenderId: data.fcm.config.messagingSenderId,
-            appId: data.fcm.config.appId,
-            measurementId: data.fcm.config.measurementId
-        };
-        const app = initializeApp(firebaseConfig);
-        const messaging = getMessaging(app);
+    if(data.fcm) {
+        if (permission === "granted") {
+            const firebaseConfig = {
+                apiKey: data.fcm.config.apiKey,
+                authDomain: data.fcm.config.authDomain,
+                projectId: data.fcm.config.projectId,
+                storageBucket: data.fcm.config.storageBucket,
+                messagingSenderId: data.fcm.config.messagingSenderId,
+                appId: data.fcm.config.appId,
+                measurementId: data.fcm.config.measurementId
+            };
+            const app = initializeApp(firebaseConfig);
+            const messaging = getMessaging(app);
 
-        navigator.serviceWorker.getRegistration().then((reg) => {
-            onMessage(messaging, (payload) => {
-                // var audio = new Audio('https://devsuez.emalleg.net/storage/sound/notifications.mp3');
-                // audio.play();
-                notifications.value.unshift({
-                    title: payload.data.title,
-                    url: payload.data.url,
-                    icon: payload.data.icon,
-                    image: payload.data.image,
-                    description: payload.data.message,
-                    type: payload.data.type,
-                    date: moment().fromNow(),
+            navigator.serviceWorker.getRegistration().then((reg) => {
+                onMessage(messaging, (payload) => {
+                    // var audio = new Audio('https://devsuez.emalleg.net/storage/sound/notifications.mp3');
+                    // audio.play();
+                    notifications.value.unshift({
+                        title: payload.data.title,
+                        url: payload.data.url,
+                        icon: payload.data.icon,
+                        image: payload.data.image,
+                        description: payload.data.message,
+                        type: payload.data.type,
+                        date: moment().fromNow(),
+                    });
+                    // push notification can send event.data.json() as well
+                    const options = {
+                        body: payload.data.message,
+                        icon: payload.data.image,
+                        tag: "alert",
+                    };
+                    let notification = reg.showNotification(
+                        payload.data.title,
+                        options
+                    );
+                    // link to page on clicking the notification
+                    notification.onclick = (payload) => {
+                        window.open(payload.data.url);
+                    };
                 });
-                // push notification can send event.data.json() as well
-                const options = {
-                    body: payload.data.message,
-                    icon: payload.data.image,
-                    tag: "alert",
-                };
-                let notification = reg.showNotification(
-                    payload.data.title,
-                    options
-                );
-                // link to page on clicking the notification
-                notification.onclick = (payload) => {
-                    window.open(payload.data.url);
-                };
             });
-        });
 
+        }
     }
 });
 

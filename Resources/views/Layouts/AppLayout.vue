@@ -11,7 +11,7 @@ import {useStyleStore} from '@@/Stores/style.js';
 import {useResourceStore} from '@@/Stores/resourceStore';
 
 import {storeToRefs} from "pinia/dist/pinia";
-
+import SyncLoader from 'vue-spinner/src/SyncLoader.vue'
 
 const attrs = useAttrs();
 
@@ -25,7 +25,7 @@ const props = defineProps({
 
     //Load Form Global Data
     data: Object,
-    errorBags: Array,
+    errorBags: Object,
     errors: Object,
     jetstream: Object,
     user: Object,
@@ -50,10 +50,13 @@ let {
 
 let store = useResourceStore();
 
+let loading = ref(true);
+
 // Check if The Sidebar is expanded or not
 const layoutStore = useLayoutStore();
 Inertia.on('navigate', () => {
     layoutStore.isAsideMobileExpanded = false;
+    loading.value = false
 });
 
 layoutStore.Breadcrumbs = [];
@@ -61,13 +64,14 @@ layoutStore.Breadcrumbs = [];
 // Load Style form the storage
 const styleStore = useStyleStore();
 
-
-
-
 </script>
 
 <template>
-    <div class="filament-body bg-gray-100 text-gray-900 dark:text-gray-100 dark:bg-gray-900">
+    <div v-if="loading" class="flex flex-col items-center justify-center h-screen w-screen z-50 bg-white">
+        <SyncLoader :loading="loading" color="#000" size="20px"></SyncLoader>
+    </div>
+
+    <div v-else class="filament-body bg-gray-100 text-gray-900 dark:text-gray-100 dark:bg-gray-900">
         <div class="filament-app-layout flex w-full min-h-screen overflow-v-clip">
             <Aside />
             <div

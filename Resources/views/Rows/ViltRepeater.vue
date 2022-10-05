@@ -76,16 +76,69 @@
         <JetInputError v-if="message" :message="message" class="mt-2" />
     </div>
 
-    <div class="flex justify-between my-4" v-if="view === 'view'">
-        <div>
-            <p class="font-bold capitalize">{{ row.label ? row.label: row.name }}</p>
+    <div class="flex justify-between my-4" v-if="view === 'view' && main">
+        <div class="flex justify-between my-4">
+            <div>
+                <p class="font-bold capitalize">{{ row.label ? row.label : row.name }}</p>
+            </div>
+            <div></div>
         </div>
         <div>
-            <p>{{ modelValue[row.trackByName] }}</p>
+            <table class="w-full table-normal">
+                <thead>
+                    <tr v-for="(item, key) in row.options" :key="key">
+                        <th class="border">
+                            {{item.label ? item.label : item.name}}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                <tr
+                    v-for="(value, key) in main"
+                    :key="key"
+                    class="py-2 px-2"
+                >
+                    <td class="border w-full" v-for="(item, key) in row.options" :key="key">
+                        <div v-if="item.vue === 'ViltMedia.vue'">
+                            <img :src="value[item.name]" alt="" class="w-16" />
+                        </div>
+                        <div v-else>
+                            <p v-if="value[item.name]" class="px-2 py-2">{{ value[item.name] }}</p>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
     </div>
-    <div v-if="view === 'table'">
-        <p>{{ modelValue[row.trackByName] }}</p>
+    <div v-if="view === 'table' && main">
+        <div class="mx-1 my-1">
+            <table class="w-full table-normal">
+                <thead>
+                <tr>
+                    <th class="border"  v-for="(item, key) in row.options" :key="key">
+                        {{item.label ? item.label : item.name}}
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr
+                    v-for="(value, key) in main"
+                    :key="key"
+                    class="py-2 px-2"
+                >
+                    <td class="border w-full" v-for="(item, key) in row.options" :key="key">
+                        <div v-if="item.vue === 'ViltMedia.vue'">
+                            <img :src="value[item.name]" alt="" class="w-16" />
+                        </div>
+                        <div v-else>
+                            <p v-if="value[item.name]" class="px-2 py-2">{{ value[item.name] }}</p>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </template>
 
@@ -128,18 +181,32 @@ export default defineComponent({
             main: [],
         };
     },
+    watch:{
+        main:{
+            handler: function (val, oldVal) {
+                if(this.view === 'input'){
+                    this.$emit('update:modelValue', val);
+                }
+            },
+            deep: true
+        },
+        modelValue: function (val) {
+            if(this.view === 'input' && this.modelValue) {
+                this.main = val;
+            }
+        },
+    },
     mounted() {
-        let rows = this.optionRows;
-        let JSONRows = JSON.stringify(rows);
-        this.main.push(JSON.parse(JSONRows));
-
         if (this.modelValue) {
             this.main = this.modelValue;
         }
         else {
-            if (this.row.default) {
-                this.main = this.row.default;
-            }
+            this.main = this.optionRows;
+        }
+    },
+    beforeUpdate() {
+        if (this.row.default) {
+            this.main = this.row.default;
         }
     },
     props: {

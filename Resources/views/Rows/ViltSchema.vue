@@ -46,7 +46,7 @@
                     class="py-2 px-2"
                 >
                     <th class="border">
-                        {{item.label}}
+                        {{item.label ? item.label : item.name}}
                     </th>
                     <td class="border w-full">
                         <div v-if="item.vue === 'ViltMedia.vue'">
@@ -71,7 +71,7 @@
                     class="py-2 px-2"
                 >
                     <th class="border">
-                        {{item.label}}
+                        {{item.label ? item.label : item.name}}
                     </th>
                     <td class="border w-full">
                         <div v-if="item.vue === 'ViltMedia.vue'">

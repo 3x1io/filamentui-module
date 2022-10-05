@@ -25,6 +25,7 @@ import {useCookies} from "vue3-cookies";
 import {createToaster} from "@meforma/vue-toaster";
 import {useLayoutStore} from '@@/Stores/layout.js';
 
+
 const props = defineProps({
     //Load Form Resource
     collection: Object,
@@ -40,8 +41,6 @@ const props = defineProps({
     jetstream: Object,
     user: Object,
 });
-
-
 
 //Load Storage
 
@@ -123,6 +122,10 @@ function fireAction (name, id = null){
 }
 
 function openModal(name, id = null){
+    Inertia.reload({
+        preserveScroll: true,
+        preserveState: true,
+    });
     selectedID.value = id;
     actionModal.value[name] = !actionModal.value[name];
 }
@@ -212,9 +215,10 @@ function filter(filter){
 Bulk Methods
  */
 function bulkAction(action) {
+    showBlukModal.value = false
     bulkActionTitle.value = action;
     bulkModal.value = true;
-    showBlukModal.value = false;
+
 }
 function bulkAll(value) {
     if (!value) {
@@ -257,6 +261,11 @@ function createItem(){
 }
 
 function editItem(item){
+    Inertia.reload({
+        preserveScroll: true,
+        preserveState: true,
+    });
+
     form.value = useForm(formMake());
     if(props.render.form.name === 'page'){
         Inertia.visit(route(props.list.url + '.edit', item.id))
@@ -472,6 +481,7 @@ function closeModal(type){
 
 <template>
     <div>
+
         <!-- Images Light Box -->
         <vue-easy-lightbox
             ref="lightbox"
@@ -744,7 +754,7 @@ function closeModal(type){
                     <ViltForm
                         v-model="modalAction[item.name]"
                         :rows="item.rows"
-                        :errors="modalAction[item.name] ? modalAction[item.name].errors : {}"
+                        :errors="props.errors"
                     />
                 </form>
             </template>

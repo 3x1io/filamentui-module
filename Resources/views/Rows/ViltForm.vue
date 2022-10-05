@@ -1,7 +1,8 @@
 <template>
     <div>
         <div v-for="(item, key) in rows" :key="key">
-            <Component :is="item.vue.replace('.vue', '')" :row="item" :view="view" @update:modelValue="update" v-model="form[item.name]" :message="errors[item.name]"></Component>
+            <Component v-if="item.vue === 'ViltHasOne.vue'" :is="item.vue.replace('.vue', '')" :row="item" :view="view" @update:modelValue="update" v-model="form[item.name]" :message="errors[item.name]"></Component>
+            <Component v-else :is="item.vue.replace('.vue', '')" :row="item" :view="view" @update:modelValue="update" v-model="form[item.name]" :message="errors[item.name]"></Component>
         </div>
     </div>
 </template>
@@ -104,6 +105,16 @@ export default defineComponent({
         else {
             this.form = this.getRows;
         }
+        const elemetns = document.querySelectorAll("[autocomplete=\"off\"]");
+        elemetns.forEach((element)=>{
+            element.setAttribute('readonly', 'readonly');
+            element.style.backgroundColor = "inherit";
+
+            setTimeout(()=>{
+                element.removeAttribute("readonly");
+            }, 500)
+        })
+
     },
     beforeUpdate() {
         if(this.edit){

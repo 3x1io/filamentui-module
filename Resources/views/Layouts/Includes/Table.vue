@@ -147,13 +147,18 @@ function transItem(item, key) {
 }
 
 let isDataObject = typeof props.collection.data === 'object';
-let dataLength = 0;
-if(isDataObject){
-    dataLength = Object.keys(props.collection.data).length;
-}
-else {
-    dataLength = props.collection.data.length;
-}
+
+let dataLength = computed(()=>{
+    let getDataLength = 0;
+    if(isDataObject){
+        getDataLength = Object.keys(props.collection.data).length;
+    }
+    else {
+        getDataLength = props.collection.data.length;
+    }
+
+    return getDataLength;
+})
 
 let filterData = computed(()=>{
     if(isDataObject){

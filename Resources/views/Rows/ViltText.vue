@@ -6,6 +6,7 @@
         <span v-if="row.required" class="text-red-600 text-bold">*</span>
         </label>
         <input
+            autocomplete="off"
             :type="row.type? row.type: 'text'"
             :name="row.name"
             :id="row.name"
