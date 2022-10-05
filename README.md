@@ -30,7 +30,7 @@ yarn
 ```
 
 ```bash
-yarn add tippy.js
+yarn add tippy.js firebase vue-spinner
 ```
 
 ```bash
