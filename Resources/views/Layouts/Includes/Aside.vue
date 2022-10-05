@@ -2,6 +2,7 @@
 // Check if The Sidebar is expanded or not
 import {Inertia} from "@inertiajs/inertia";
 import {useLayoutStore} from '@@/Stores/layout.js';
+import {useStyleStore} from '@@/Stores/style.js';
 import {usePage, Link} from "@inertiajs/inertia-vue3";
 import {computed, onMounted, ref} from "vue";
 import {useTrans} from "@@/Composables/useTrans";
@@ -12,6 +13,8 @@ const layoutStore = useLayoutStore();
 Inertia.on('navigate', () => {
     layoutStore.isAsideMobileExpanded = false;
 });
+
+const styleStorge = useStyleStore();
 
 let orderingMenu = ref({});
 
@@ -140,13 +143,35 @@ onMounted(()=>{
                 data-turbo="false"
                 style=""
             >
-                <span v-if="layoutStore.isAsideLgActive" class="capitalize">
-                    {{ usePage().props.value.data.appName.substring(0, 4) }}
+                <div v-if="usePage().props.value.data.theme.logo">
+                    <img
+                        v-if="layoutStore.isAsideLgActive"
+                        :src="usePage().props.value.data.appUrl +'/'+usePage().props.value.data.theme.sm_logo"
+                        class="w-10 h-10"
+                        alt="logo"
+                    />
+                    <img
+                        v-else-if="layoutStore.isAsideLgActive && styleStorge.darkMode"
+                        :src="usePage().props.value.data.appUrl +'/'+usePage().props.value.data.theme.dark_sm_logo"
+                        class="w-10 h-10"
+                        alt="logo"
+                    />
+                    <img
+                        v-else
+                        :src="usePage().props.value.data.appUrl +'/'+usePage().props.value.data.theme.logo"
+                        class="w-10 h-10"
+                        alt="logo"
+                    />
+                </div>
+                <div v-else>
+                    <span v-if="layoutStore.isAsideLgActive" class="capitalize">
+                        {{  usePage().props.value.data.appName.substring(0, 4) }}
+                    </span>
+                        <span v-else>
+                         {{ usePage().props.value.data.appName }}
+                    </span>
+                </div>
 
-                </span>
-                <span v-else>
-                     {{ usePage().props.value.data.appName }}
-                </span>
             </Link>
         </header>
 

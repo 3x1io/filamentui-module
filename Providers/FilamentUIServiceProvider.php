@@ -5,6 +5,7 @@ namespace Modules\FilamentUI\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Factory;
 use Modules\Base\Services\Components\Base\Lang;
+use Modules\Base\Services\Components\Base\Share;
 use Modules\Base\Services\Core\VILT;
 
 class FilamentUIServiceProvider extends ServiceProvider
@@ -30,9 +31,17 @@ class FilamentUIServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->moduleName, 'Database/Migrations'));
+
+        VILT::registerShareData(Share::make('theme')->data([
+            'logo' => setting('theme_logo'),
+            'dark_logo' => setting('theme_dark_logo'),
+            'sm_logo' => setting('theme_sm_logo'),
+            'dark_sm_logo' => setting('theme_dark_sm_logo'),
+        ]));
+
         VILT::loadResources($this->moduleName);
         VILT::loadPages($this->moduleName);
-        VILT::registerTranslation(Lang::make('filamentui.sidebar')->label(__('FilamentUI')));
+        VILT::registerTranslation(Lang::make('theme.sidebar')->label(__('Theme Setting')));
     }
 
     /**
