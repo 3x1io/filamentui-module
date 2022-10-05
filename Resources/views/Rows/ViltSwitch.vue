@@ -11,9 +11,9 @@
             :id="row.name"
             v-model="value"
             :classes="{
-              container: 'inline-block rounded-full outline-none focus:ring focus:ring-'+row.color?row.color:'primary'+'-500 focus:ring-opacity-30',
+              container: row.color? 'inline-block rounded-full outline-none focus:ring focus:ring-'+row.color+'-500 focus:ring-opacity-30' : 'inline-block rounded-full outline-none focus:ring focus:ring-primary-500 focus:ring-opacity-30',
               toggle: 'flex w-12 h-5 rounded-full relative cursor-pointer transition items-center box-content border-2 text-xs leading-none',
-              toggleOn: 'bg-'+row.color?row.color:'primary'+'-500 border-'+row.color?row.color:'primary'+'-500 justify-start text-white',
+              toggleOn: row.color ? 'bg-'+row.color+'-500 border-'+row.color+'-500 justify-start text-white' : 'bg-primary-500 border-primary-500 justify-start text-white',
               toggleOff: 'bg-gray-200 border-gray-200 justify-end text-gray-700',
               toggleOnDisabled: 'bg-gray-300 border-gray-300 justify-start text-gray-400 cursor-not-allowed',
               toggleOffDisabled: 'bg-gray-200 border-gray-200 justify-end text-gray-400 cursor-not-allowed',
