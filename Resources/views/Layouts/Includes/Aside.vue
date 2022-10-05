@@ -145,21 +145,27 @@ onMounted(()=>{
             >
                 <div v-if="usePage().props.value.data.theme.logo">
                     <img
-                        v-if="layoutStore.isAsideLgActive"
+                        v-if="layoutStore.isAsideLgActive && !styleStorge.darkMode"
                         :src="usePage().props.value.data.appUrl +'/'+usePage().props.value.data.theme.sm_logo"
-                        class="w-10 h-10"
+                        class="h-8"
                         alt="logo"
                     />
                     <img
                         v-else-if="layoutStore.isAsideLgActive && styleStorge.darkMode"
                         :src="usePage().props.value.data.appUrl +'/'+usePage().props.value.data.theme.dark_sm_logo"
-                        class="w-10 h-10"
+                        class="h-8"
+                        alt="logo"
+                    />
+                    <img
+                        v-else-if="styleStorge.darkMode"
+                        :src="usePage().props.value.data.appUrl +'/'+usePage().props.value.data.theme.dark_logo"
+                        class="h-8"
                         alt="logo"
                     />
                     <img
                         v-else
                         :src="usePage().props.value.data.appUrl +'/'+usePage().props.value.data.theme.logo"
-                        class="w-10 h-10"
+                        class="h-8"
                         alt="logo"
                     />
                 </div>
@@ -167,7 +173,7 @@ onMounted(()=>{
                     <span v-if="layoutStore.isAsideLgActive" class="capitalize">
                         {{  usePage().props.value.data.appName.substring(0, 4) }}
                     </span>
-                        <span v-else>
+                    <span v-else>
                          {{ usePage().props.value.data.appName }}
                     </span>
                 </div>

@@ -8,7 +8,7 @@ import { usePage, Link } from '@inertiajs/inertia-vue3'
             <Link :href="route('dashboard')" rel="noopener noreferrer" class="text-center text-gray-300 hover:text-primary-500 transition">
                 <img
                     :src="usePage().props.value.data.appUrl +'/'+usePage().props.value.data.theme.logo"
-                    class="w-10 h-10"
+                    class="h-8"
                     alt="logo"
                 />
             </Link>
