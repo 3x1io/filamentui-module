@@ -1,10 +1,6 @@
 <template>
     <div class="py-2 px-2" v-if="view === 'input'">
-        <label v-if="row.name" :for="row.name" class="text-sm font-normal capitalize dark:text-gray-100" :class="{'text-red-600': message}">{{
-                row.label ? row.label : row.name
-            }}
-            <span v-if="row.required" class="text-red-600 text-bold">*</span>
-        </label>
+        <ViltLabel :row="row" v-if="label" />
         <VueEditor
             v-model="value"
             :id="row.name"
@@ -12,8 +8,7 @@
             :placeholder="row.placeholder"
             :class="{'border-danger-600 ring-danger-600' : message}"
         />
-        <small v-if="row.hint" class="text-gray-400 mx-2">{{row.hint}}</small>
-        <JetInputError v-if="message" :message="message" class="mt-2" />
+        <ViltError :row="row" :message="message" />
     </div>
     <div class="flex justify-between my-4" v-if="view === 'view'">
         <div>
@@ -33,10 +28,15 @@ import JetInputError from "@@/Jetstream/InputError.vue";
 // Basic Use - Covers most scenarios
 import { VueEditor } from "vue3-editor";
 
+import ViltLabel from "$$/ViltLabel.vue";
+import ViltError from "$$/ViltError.vue";
+
 export default {
     components: {
         JetInputError,
-        VueEditor
+        VueEditor,
+        ViltLabel,
+        ViltError
     },
     data() {
         return {
@@ -56,7 +56,7 @@ export default {
         },
     },
     mounted() {
-        if (this.modelValue) {
+        if (this.modelValue !== null) {
             this.value = this.modelValue
         }
         else {
@@ -79,6 +79,10 @@ export default {
             String,
             default: null,
         },
+        label: {
+            Boolean,
+            default: true,
+        }
     },
 };
 </script>

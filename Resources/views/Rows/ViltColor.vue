@@ -1,14 +1,9 @@
 <template>
     <div class="py-2 px-2" v-if="view === 'input'">
-        <label v-if="row.name" :for="row.name" class="text-sm font-normal capitalize dark:text-gray-100" :class="{'text-red-600': message}">{{
-                row.label ? row.label : row.name
-            }}
-            <span v-if="row.required" class="text-red-600 text-bold">*</span>
-        </label>
-        <br>
+        <ViltLabel :row="row" v-if="label" />
+        <br v-if="label">
         <VSwatches v-model="value" show-fallback fallback-input-type="color" popover-x="left" :disabled="row.disabled"></VSwatches>
-        <small v-if="row.hint" class="text-gray-400 mx-2">{{row.hint}}</small>
-        <JetInputError :message="message" class="mt-2" />
+        <ViltError :row="row" :message="message" />
     </div>
     <div class="flex justify-between my-4" v-if="view === 'view'">
         <div>
@@ -29,11 +24,15 @@
 import { defineComponent } from "vue";
 import JetInputError from "@@/Jetstream/InputError.vue";
 import VSwatches from "vue3-swatches";
+import ViltLabel from "$$/ViltLabel.vue";
+import ViltError from "$$/ViltError.vue";
 
 export default defineComponent({
     components: {
         JetInputError,
         VSwatches,
+        ViltLabel,
+        ViltError
     },
     data() {
         return {
@@ -41,7 +40,7 @@ export default defineComponent({
         };
     },
     mounted() {
-        if (this.modelValue) {
+        if (this.modelValue !== null) {
             this.value = this.modelValue;
         }
         else {
@@ -76,6 +75,10 @@ export default defineComponent({
             String,
             default: null,
         },
+        label: {
+            Boolean,
+            default: true,
+        }
     },
 });
 </script>

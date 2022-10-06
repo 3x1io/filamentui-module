@@ -1,11 +1,9 @@
 <template>
     <div class="py-2 px-2" v-if="view === 'input'">
-        <ViltLabel :row="row" v-if="label" />
+        <ViltLabel :row="row" v-if="label"/>
         <input
-            type="number"
-            :max="row.max"
-            :min="row.min"
-            :step="row.step"
+            autocomplete="off"
+            :type="row.type? row.type: 'text'"
             :name="row.name"
             :id="row.name"
             :disabled="row.disabled"
@@ -21,12 +19,22 @@
             <p class="font-bold capitalize">{{ row.label ? row.label: row.name }}</p>
         </div>
         <div>
-            <p v-if="row.money">{{ money(modelValue) }}</p>
-            <p v-else>{{ modelValue }}</p>
+            <p>{{ modelValue }}</p>
         </div>
     </div>
-    <div class="flex justify-between my-4" v-if="view === 'table'">
-        <p v-if="row.money">{{ money(modelValue) }}</p>
+    <div v-if="view === 'table'">
+        <p v-if="row.badge" class="inline-flex items-center justify-center ml-auto rtl:ml-0 rtl:mr-auto min-h-4 px-2 py-0.5 text-sm font-medium tracking-tight rounded-xl whitespace-normal " :class="row.color?'text-'+row.color+'-600 dark:text-'+row.color+'-600 bg-'+row.color+'-200': 'bg-primary-200 dark:text-primary-500 text-primary-600' ">
+            <span v-if="row.max">
+                {{modelValue.split(' ').slice(0, row.max).join('  ') +'...'}}
+            </span>
+            <span v-else>
+                {{modelValue}}
+            </span>
+        </p>
+        <a v-else-if="row.url" :href="modelValue" target="_blank" class="inline-flex items-center justify-center ml-auto rtl:ml-0 rtl:mr-auto min-h-4 px-2 py-0.5 text-sm font-medium tracking-tight rounded-xl whitespace-normal bg-primary-200 dark:text-primary-500 text-primary-600" >
+            <i class="bx bx-link"></i>
+            Open URL
+        </a>
         <p v-else>{{ modelValue }}</p>
     </div>
 </template>
@@ -62,6 +70,11 @@ export default defineComponent({
         ViltLabel,
         ViltError
     },
+    data(){
+        return {
+            value: ""
+        }
+    },
     watch: {
         value: function (val) {
             if(this.view === 'input') {
@@ -74,49 +87,6 @@ export default defineComponent({
             }
         },
     },
-    data(){
-        return {
-            value: ""
-        }
-    },
-    methods: {
-        money(item) {
-            if(item){
-                if (localStorage.getItem('lang')) {
-                    let lang = JSON.parse(localStorage.getItem('lang'));
-                    if (lang.id === 'ar') {
-                        return item.toLocaleString('en-US', {
-                            style: 'currency',
-                            currency: 'EGP',
-                        });
-                    } else if (lang.id === 'en') {
-                        return item.toLocaleString('ar-EG', {
-                            style: 'currency',
-                            currency: 'EGP',
-                        });
-                    }
-                }
-            }
-            else {
-                item = 0;
-                if (localStorage.getItem('lang')) {
-                    let lang = JSON.parse(localStorage.getItem('lang'));
-                    if (lang.id === 'ar') {
-                        return item.toLocaleString('en-US', {
-                            style: 'currency',
-                            currency: 'EGP',
-                        });
-                    } else if (lang.id === 'en') {
-                        return item.toLocaleString('ar-EG', {
-                            style: 'currency',
-                            currency: 'EGP',
-                        });
-                    }
-                }
-            }
-
-        }
-    },
     mounted(){
         if(this.modelValue !== null){
             this.value = this.modelValue
@@ -126,6 +96,7 @@ export default defineComponent({
                 this.value = this.row.default
             }
         }
+
     },
 });
 </script>

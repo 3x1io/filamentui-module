@@ -1,10 +1,6 @@
 <template>
     <div class="py-2 px-2" v-if="view === 'input'">
-        <label v-if="row.name" :for="row.name" class="text-sm font-normal capitalize dark:text-gray-100" :class="{'text-red-600': message}">{{
-                row.label ? row.label : row.name
-            }}
-            <span v-if="row.required" class="text-red-600 text-bold">*</span>
-        </label>
+        <ViltLabel :row="row" v-if="label" />
         <multiselect
             v-model="value"
             :options="records"
@@ -47,8 +43,7 @@
                 </div>
             </template>
         </multiselect>
-        <small v-if="row.hint" class="text-gray-400 mx-2">{{row.hint}}</small>
-        <JetInputError :message="message" class="mt-2" />
+        <ViltError :row="row" :message="message" />
     </div>
     <div class="flex justify-between my-4" v-if="view === 'view' && modelValue">
         <div>
@@ -68,11 +63,14 @@ import { defineComponent } from "vue";
 import JetInputError from "@@/Jetstream/InputError.vue";
 import Multiselect from "@suadelabs/vue3-multiselect";
 import "@suadelabs/vue3-multiselect/dist/vue3-multiselect.css";
-
+import ViltLabel from "$$/ViltLabel.vue";
+import ViltError from "$$/ViltError.vue";
 export default defineComponent({
     components: {
         JetInputError,
         Multiselect,
+        ViltLabel,
+        ViltError
     },
     data() {
         return {
@@ -188,6 +186,10 @@ export default defineComponent({
             String,
             default: null,
         },
+        label: {
+            Boolean,
+            default: true,
+        }
     },
 });
 </script>

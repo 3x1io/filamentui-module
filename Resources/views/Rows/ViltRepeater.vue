@@ -1,10 +1,6 @@
 <template>
     <div class="py-2 px-2" v-if="view === 'input'">
-        <label v-if="row.name" :for="row.name" class="text-sm font-normal capitalize dark:text-gray-100" :class="{'text-red-600': message}">{{
-                row.label ? row.label : row.name
-            }}
-            <span v-if="row.required" class="text-red-600 text-bold">*</span>
-        </label>
+        <ViltLabel :row="row" v-if="label" />
 
         <div class="filament-forms-repeater-component space-y-6 rounded-xl">
             <VueDraggableNext class="space-y-6" :list="main">
@@ -72,8 +68,7 @@
             </div>
 
         </div>
-        <small v-if="row.hint" class="text-gray-400 mx-2">{{row.hint}}</small>
-        <JetInputError v-if="message" :message="message" class="mt-2" />
+        <ViltError :row="row" :message="message" />
     </div>
 
     <div class="flex justify-between my-4" v-if="view === 'view' && main">
@@ -158,6 +153,8 @@ import ViltDateTime from "$$/ViltDateTime.vue";
 import ViltTime from "$$/ViltTime.vue";
 import ViltMedia from "$$/ViltMedia.vue";
 import {VueDraggableNext} from 'vue-draggable-next'
+import ViltLabel from "$$/ViltLabel.vue";
+import ViltError from "$$/ViltError.vue";
 
 export default defineComponent({
     components: {
@@ -175,6 +172,8 @@ export default defineComponent({
         ViltDateTime,
         ViltTime,
         ViltMedia,
+        ViltLabel,
+        ViltError
     },
     data() {
         return {
@@ -197,7 +196,7 @@ export default defineComponent({
         },
     },
     mounted() {
-        if (this.modelValue) {
+        if (this.modelValue !== null) {
             this.main = this.modelValue;
         }
         else {
@@ -223,6 +222,10 @@ export default defineComponent({
             String,
             default: null,
         },
+        label: {
+            Boolean,
+            default: true,
+        }
     },
     computed:{
         optionRows(){

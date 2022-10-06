@@ -283,9 +283,8 @@ let filterData = computed(()=>{
                             v-model="item[field.name]"
                             view="table"
                         />
-                        <slot name="td"></slot>
                     </td>
-
+                    <slot name="td" :item="item" :key="index"></slot>
                     <td
                         v-if="
                             $slots['actions'] ||
@@ -392,6 +391,7 @@ import ViltSchema from '$$/ViltSchema.vue';
 import ViltRich from '$$/ViltRich.vue';
 import ViltRelation from '$$/ViltRelation.vue';
 import ViltHasOne from '$$/ViltHasOne.vue';
+import ViltSlug from '$$/ViltSlug.vue';
 
 export  default {
     components: {
@@ -411,7 +411,8 @@ export  default {
         ViltSchema,
         ViltRich,
         ViltRelation,
-        ViltHasOne
+        ViltHasOne,
+        ViltSlug,
     }
 }
 </script>

@@ -1,11 +1,7 @@
 <template>
     <div class="py-2 px-2" v-if="view === 'input'">
-        <label v-if="row.name" :for="row.name" class="text-sm font-normal capitalize dark:text-gray-100" :class="{'text-red-600': message}">{{
-                row.label ? row.label : row.name
-            }}
-            <span v-if="row.required" class="text-red-600 text-bold">*</span>
-        </label>
-        <br>
+        <ViltLabel :row="row" v-if="label"/>
+        <br v-if="label">
         <Toggle
             :name="row.name"
             :id="row.name"
@@ -26,8 +22,7 @@
             }"
             :disabled="row.disabled"
         />
-        <small v-if="row.hint" class="text-gray-400 mx-2">{{row.hint}}</small>
-        <JetInputError :message="message" class="mt-2" />
+        <ViltError :row="row" :message="message" />
     </div>
     <div v-if="view === 'view'" class="flex justify-between my-4">
         <div>
@@ -67,12 +62,16 @@ import Toggle from "@vueform/toggle";
 import JetInputError from "@@/Jetstream/InputError.vue";
 import JetLabel from "@@/Jetstream/Label.vue";
 import '@vueform/toggle/themes/default.css';
+import ViltLabel from "$$/ViltLabel.vue";
+import ViltError from "$$/ViltError.vue";
 
 export default defineComponent({
     components: {
         Toggle,
         JetInputError,
         JetLabel,
+        ViltLabel,
+        ViltError
     },
     data() {
         return {
@@ -82,29 +81,39 @@ export default defineComponent({
     watch: {
         value: function (val) {
             if(this.view === 'input') {
-                if (val) {
-                    this.$emit("update:modelValue", val);
+                if (val === "1" || val === 1 || val===true) {
+                    this.$emit("update:modelValue", 1);
                 } else {
-                    this.$emit("update:modelValue", false);
+                    this.$emit("update:modelValue", 0);
                 }
             }
         },
         modelValue: function (val) {
-            if(this.view === 'input'&& this.modelValue) {
-                this.value = val;
+            if(this.view === 'input') {
+                if(val === "1" || val === 1 || val===true){
+                    this.value = true;
+                }
+                else {
+                    this.value = false;
+                }
             }
         },
     },
     mounted(){
-        if(this.modelValue){
-            this.value = this.modelValue
-            if(this.modelValue == "1"){
-                this.value = true;
+        if(this.row.default !== null){
+            if((this.row.default === "1" || this.row.default === 1 || this.row.default===true) && this.row.default !== null){
+                this.value = true
+            }
+            else {
+                this.value = false
             }
         }
         else {
-            if(this.row.default){
-                this.value = this.row.default
+            if(this.modelValue === "1" || this.modelValue === 1 || this.modelValue===true){
+                this.value = true
+            }
+            else {
+                this.value = false
             }
         }
     },
@@ -122,6 +131,10 @@ export default defineComponent({
             String,
             default: null,
         },
+        label: {
+            Boolean,
+            default: true,
+        }
     },
 });
 </script>

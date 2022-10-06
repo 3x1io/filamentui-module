@@ -1,10 +1,6 @@
 <template>
     <div class="py-2 px-2" v-if="view === 'input'">
-        <label v-if="row.name" :for="row.name" class="text-sm font-normal capitalize dark:text-gray-100" :class="{'text-red-600': message}">{{
-            row.label ? row.label : row.name
-        }}
-        <span v-if="row.required" class="text-red-600 text-bold">*</span>
-        </label>
+        <ViltLabel :row="row" v-if="label"/>
         <input
             type="email"
             :name="row.name"
@@ -15,8 +11,7 @@
             class="block my-2 w-full transition duration-75 rounded-lg shadow-sm focus:border-primary-500 focus:ring-1 focus:ring-inset focus:ring-primary-500 disabled:opacity-70 dark:bg-gray-700 dark:text-white dark:focus:border-primary-500 border-gray-300 dark:border-gray-600"
             :class="{'border-danger-600 ring-danger-600' : message}"
         />
-        <small v-if="row.hint" class="text-gray-400 mx-2">{{row.hint}}</small>
-        <JetInputError v-if="message" :message="message" class="mt-2" />
+        <ViltError :row="row" :message="message" />
     </div>
     <div  v-if="view === 'view'" class="flex justify-between my-4" >
         <div>
@@ -34,6 +29,8 @@
 <script>
 import { defineComponent } from "vue";
 import JetInputError from "@@/Jetstream/InputError.vue";
+import ViltLabel from "$$/ViltLabel.vue";
+import ViltError from "$$/ViltError.vue";
 
 export default defineComponent({
     props: {
@@ -50,6 +47,10 @@ export default defineComponent({
             String,
             default: null,
         },
+        label: {
+            Boolean,
+            default: true,
+        }
     },
     watch: {
         value: function (val) {
@@ -65,6 +66,8 @@ export default defineComponent({
     },
     components: {
         JetInputError,
+        ViltLabel,
+        ViltError
     },
     data(){
         return {
@@ -72,7 +75,7 @@ export default defineComponent({
         }
     },
     mounted(){
-        if(this.modelValue){
+        if(this.modelValue !== null){
             this.value = this.modelValue
         }
         else {
