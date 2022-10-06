@@ -110,44 +110,95 @@ let deleteModal = ref(false);
 // Methods
 let {formMake} = useGetForm();
 
-function fireAction (name, id = null){
-    Inertia.post(route(name), {
-        id: id ? id : selectedID.value,
-    }, {
-        onSuccess: () => {
-            success();
-            reload();
-        }
-    });
-}
 
-function openModal(name, id = null){
-    Inertia.reload({
-        preserveScroll: true,
-        preserveState: true,
-    });
-    selectedID.value = id;
-    actionModal.value[name] = !actionModal.value[name];
-}
 
-function modalActionRun(modal, action) {
-    if (selectedID.value) {
-        modalAction.value[modal].id = selectedID.value;
+let getAction = ref({});
+let showConfirmation = ref(false);
+
+function openModal(name, id = null, confirmed=false){
+    getAction.value = {};
+    if(confirmed){
+        getAction.value = {id: id, name: name, type: 'modal'};
+        showConfirmation.value = !showConfirmation.value;
     }
-    let form = useForm(modalAction.value[modal]);
-    Inertia.post(route(action), form,{
-        preserveScroll: true,
-        onSuccess: () => {
-            form.reset();
-            actionModal.value[modal] = false;
-            success();
-        },
-    });
+    else {
+        Inertia.reload({
+            preserveScroll: true,
+            preserveState: true,
+        });
+        selectedID.value = id;
+        actionModal.value[name] = !actionModal.value[name];
+    }
 }
 
+function fireAction (name, id = null, confirmed=false, method){
+    getAction.value = {};
+    if(confirmed){
+        getAction.value = {id: id, name: name, type: 'action'};
+        showConfirmation.value = !showConfirmation.value;
+    }
+    else{
+        if(method === 'post'){
+            Inertia.post(route(name), {
+                id: id ? id : selectedID.value,
+            }, {
+                onSuccess: () => {
+                    success();
+                    reload();
+                }
+            });
+        }
+        else {
+            Inertia.get(route(name, id));
+        }
+    }
+}
 
-function openUrl(url){
-    window.open(url);
+function modalActionRun(modal, action, confirmed=false) {
+    getAction.value = {};
+    if(confirmed){
+        getAction.value = {modal: modal, action: action, type: 'action'};
+        showConfirmation.value = !showConfirmation.value;
+    }
+    else {
+        if (selectedID.value) {
+            modalAction.value[modal].id = selectedID.value;
+        }
+        let form = useForm(modalAction.value[modal]);
+        Inertia.post(route(action), form,{
+            preserveScroll: true,
+            onSuccess: () => {
+                form.reset();
+                actionModal.value[modal] = false;
+                success();
+            },
+        });
+    }
+}
+
+function openUrl(url, confirmed=false){
+    getAction.value = {};
+    if(confirmed){
+        getAction.value = {url: url, type: 'url'};
+        showConfirmation.value = !showConfirmation.value;
+    }else {
+        window.open(url);
+    }
+}
+
+function processCurrentAction(){
+    if(getAction.value.type === 'modal'){
+        showConfirmation.value = !showConfirmation.value;
+        openModal(getAction.value.name, getAction.value.id);
+    }
+    if(getAction.value.type === 'action'){
+        showConfirmation.value = !showConfirmation.value;
+        fireAction(getAction.value.name, getAction.value.id);
+    }
+    if(getAction.value.type === 'url'){
+        showConfirmation.value = !showConfirmation.value;
+        openUrl(getAction.value.url);
+    }
 }
 
 /*
@@ -247,6 +298,10 @@ function popUp(getImages){
 }
 
 function createItem(){
+    Inertia.reload({
+        preserveScroll: true,
+        preserveState: true,
+    });
     form.value = useForm(formMake());
     if(props.render.form.name === 'page'){
         Inertia.get(route(props.list.url + '.create'), {}, {
@@ -477,6 +532,25 @@ function closeModal(type){
         bulkModal.value = !bulkModal.value;
     }
 }
+
+let firstTime = ref(false);
+let collectionData = JSON.parse(JSON.stringify(props.collection.data));
+
+function activeSelectedAction(row, item, value, index){
+    if(firstTime.value || (collectionData[index][row.name] === 0 && row.vue === 'ViltSwitch.vue')){
+        Inertia.post(route(props.list.url + ".action", item.id), {
+            action: row.name,
+            value: value
+        }, {
+            preserveScroll: true,
+            preserveState: true
+        });
+        firstTime.value = true;
+    }
+    else {
+        firstTime.value = true;
+    }
+}
 </script>
 
 <template>
@@ -536,9 +610,9 @@ function closeModal(type){
                     @click.prevent="
                             !action.url
                                 ? action.modal
-                                    ? openModal(action.modal)
-                                    : fireAction(action.action)
-                                : openUrl(action.url)
+                                    ? openModal(action.modal, null, action.confirmed)
+                                    : fireAction(action.action, null, action.confirmed, action.actionMethod)
+                                : openUrl(action.url, action.confirmed)
                         "
                 >
                 <i v-if="action.icon" :class="action.icon" style="font-size: 20px"></i>
@@ -668,6 +742,26 @@ function closeModal(type){
                         @all="bulkAll"
                         @switch="switchBulk"
                     >
+                        <template v-if="props.render.table.rows && props.render.table.rows.length" #th>
+                            <th class="filament-tables-header-cell p-0 capitalize" v-for="(th, key) in props.render.table.rows" :key="key">
+                                <span class="flex items-center w-full px-4 py-2 whitespace-nowrap space-x-1 rtl:space-x-reverse font-medium text-sm text-gray-600 dark:text-gray-300 ">
+                                   {{th.label}}
+                                </span>
+                            </th>
+                        </template>
+                        <template v-if="props.render.table.rows && props.render.table.rows.length" #td="{ item, key }">
+                            <td v-for="(td, key) in props.render.table.rows" :key="key" class="w-full">
+                                <Component
+                                    :is="td.vue.replace('.vue', '')"
+                                    :row="td"
+                                    :message="errors[td.name]"
+                                    v-model="item[td.name]"
+                                    @update:modelValue="activeSelectedAction(td, item, item[td.name], key)"
+                                    :view="td.viewType"
+                                    :label="false"
+                                />
+                            </td>
+                        </template>
                         <template #actions="{ id }">
                             <div v-for="(action, index) in props.render.table.actions" :key="index">
                                 <button
@@ -675,18 +769,16 @@ function closeModal(type){
                                     @click.prevent="
                                         !action.url
                                           ? action.modal
-                                            ? openModal(action.modal, id)
-                                            : fireAction(action.action, id)
-                                          : openUrl(action.url +'/'+id)
+                                            ? openModal(action.modal, id, action.confirmed)
+                                            : fireAction(action.action, id, action.confirmed, action.actionMethod)
+                                          : openUrl(action.url +'/'+id, action.confirmed)
                                       "
-                                    class="filament-link inline-flex items-center justify-center gap-0.5 font-medium hover:underline focus:outline-none focus:underline text-sm text-gray-600 hover:text-gray-500 dark:text-gray-300 dark:hover:text-gray-200 filament-tables-link-action"
+                                    class="filament-link inline-flex items-center justify-center gap-0.5 font-medium hover:underline focus:outline-none focus:underline text-sm dark:text-primary-500 dark:hover:text-primary-400 filament-tables-link-action"
                                     :class="'text-' + action.type + '-700 hover:text-' + action.type + '-600'"
                                     role="button"
                                 >
-                                    <i class="text-[16px]" :class="action.icon"></i>
-                                    <div class="table_tooltip">
-                                        {{ action.label }}
-                                    </div>
+                                    <i class="text-[16px] filament-link-icon w-4 h-4 mr-1 rtl:ml-1" :class="action.icon"></i>
+                                    {{ action.label }}
                                 </button>
                             </div>
                         </template>
@@ -750,13 +842,16 @@ function closeModal(type){
             </template>
 
             <template #content>
-                <form action="" enctype="multipart/form-data">
+                <form action="" enctype="multipart/form-data" v-if="!item.body">
                     <ViltForm
                         v-model="modalAction[item.name]"
                         :rows="item.rows"
                         :errors="props.errors"
                     />
                 </form>
+                <div v-else>
+                    <div v-html="item.body"></div>
+                </div>
             </template>
 
             <template #footer>
@@ -777,13 +872,85 @@ function closeModal(type){
                 </div>
             </template>
         </JetDialogModal>
+
+        <!-- Confirm Generator -->
+        <JetDialogModal
+            maxWidth="sm"
+            :show="showConfirmation"
+        >
+            <template #content>
+                <div class="p-4 space-y-2 text-center dark:text-white">
+                    <h2 class="filament-modal-heading text-xl font-bold tracking-tight" id="ozo9fHMwMlC1FjErUz3l-table-bulk-action.heading">
+                        Action
+                    </h2>
+                    <h3 class="filament-modal-subheading text-gray-500">
+                        Do You Went to Process This Action?
+                    </h3>
+                </div>
+            </template>
+
+            <template #footer>
+                <div class="filament-modal-actions grid gap-2 grid-cols-[repeat(auto-fit,minmax(0,1fr))]">
+                    <button
+                        class="filament-button inline-flex items-center justify-center py-1 gap-1 font-medium rounded-lg border transition-colors focus:outline-none focus:ring-offset-2 focus:ring-2 focus:ring-inset dark:focus:ring-offset-0 min-h-[2.25rem] px-4 text-sm text-white shadow focus:ring-white border-transparent bg-danger-600 hover:bg-danger-500 focus:bg-danger-700 focus:ring-offset-danger-700 filament-tables-modal-button-action"
+                        @click.prevent="processCurrentAction()"
+                    >
+                        Confirm
+                    </button>
+                    <button
+                        class="filament-button inline-flex items-center justify-center py-1 gap-1 font-medium rounded-lg border transition-colors focus:outline-none focus:ring-offset-2 focus:ring-2 focus:ring-inset dark:focus:ring-offset-0 min-h-[2.25rem] px-4 text-sm text-gray-800 bg-white border-gray-300 hover:bg-gray-50 focus:ring-primary-600 focus:text-primary-600 focus:bg-primary-50 focus:border-primary-600 dark:bg-gray-800 dark:hover:bg-gray-700 dark:border-gray-600 dark:hover:border-gray-500 dark:text-gray-200 dark:focus:text-primary-400 dark:focus:border-primary-400 dark:focus:bg-gray-800 filament-tables-modal-button-action"
+                        @click="showConfirmation = !showConfirmation"
+                    >
+                        {{ trans('global.close') }}
+                    </button>
+                </div>
+            </template>
+        </JetDialogModal>
     </div>
 </template>
 
 <script>
 import AppLayout from "@@/Layouts/AppLayout.vue"
+import ViltText from '$$/ViltText.vue';
+import ViltTel from '$$/ViltTel.vue';
+import ViltTextArea from '$$/ViltTextArea.vue';
+import ViltNumber from '$$/ViltNumber.vue';
+import ViltSelect from '$$/ViltSelect.vue';
+import ViltSwitch from '$$/ViltSwitch.vue';
+import ViltColor from '$$/ViltColor.vue';
+import ViltEmail from '$$/ViltEmail.vue';
+import ViltDate from '$$/ViltDate.vue';
+import ViltDateTime from '$$/ViltDateTime.vue';
+import ViltTime from '$$/ViltTime.vue';
+import ViltMedia from '$$/ViltMedia.vue';
+import ViltRepeater from '$$/ViltRepeater.vue';
+import ViltSchema from '$$/ViltSchema.vue';
+import ViltRich from '$$/ViltRich.vue';
+import ViltRelation from '$$/ViltRelation.vue';
+import ViltHasOne from '$$/ViltHasOne.vue';
+import ViltSlug from '$$/ViltSlug.vue';
 
 export default {
-    layout: AppLayout
+    layout: AppLayout,
+    components: {
+        ViltText,
+        ViltTel,
+        ViltTextArea,
+        ViltNumber,
+        ViltSelect,
+        ViltSwitch,
+        ViltColor,
+        ViltEmail,
+        ViltDate,
+        ViltDateTime,
+        ViltTime,
+        ViltMedia,
+        ViltRepeater,
+        ViltSchema,
+        ViltRich,
+        ViltRelation,
+        ViltHasOne,
+        ViltSlug,
+    }
 };
 </script>

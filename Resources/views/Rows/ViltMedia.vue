@@ -1,10 +1,6 @@
 <template>
     <div class="py-2 px-2" v-if="view === 'input'">
-        <label v-if="row.name" :for="row.name" class="text-sm font-normal capitalize dark:text-gray-100" :class="{'text-red-600': message}">{{
-                row.label ? row.label : row.name
-            }}
-            <span v-if="row.required" class="text-red-600 text-bold">*</span>
-        </label>
+        <ViltLabel :row="row" v-if="label" />
         <div class="">
             <file-pond
                 :allowReorder="true"
@@ -34,8 +30,7 @@
                 @removefile="removeFile"
             />
         </div>
-        <small v-if="row.hint" class="text-gray-400 mx-2">{{row.hint}}</small>
-        <JetInputError v-if="message" :message="message" class="mt-2" />
+        <ViltError :row="row" :message="message" />
     </div>
     <div
         class="flex justify-between py-2 my-4"
@@ -117,6 +112,9 @@ import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css
 
 import JetInputError from "@@/Jetstream/InputError.vue";
 
+import ViltLabel from "$$/ViltLabel.vue";
+import ViltError from "$$/ViltError.vue";
+
 // // Create component
 const FilePond = vueFilePond(
     FilePondPluginFileValidateType,
@@ -127,6 +125,8 @@ export default defineComponent({
     components: {
         JetInputError,
         FilePond,
+        ViltLabel,
+        ViltError
     },
     props: {
         modelValue: {},
@@ -142,6 +142,10 @@ export default defineComponent({
             String,
             default: null,
         },
+        label: {
+            Boolean,
+            default: true,
+        }
     },
     data() {
         return {
@@ -213,10 +217,10 @@ export default defineComponent({
             this.$refs[this.row.name].getFiles();
         },
         addNewFile(error,file){
-            // try {
-            //
-            // }catch (e){}
-            this.images.push(file.file);
+            try {
+                this.images.push(file.file);
+            }catch (e){}
+
             this.$emit("update:modelValue", this.images);
         },
         removeFile(error,file){

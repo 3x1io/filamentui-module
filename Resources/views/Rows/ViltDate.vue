@@ -1,10 +1,6 @@
 <template>
     <div class="py-2 px-2" v-if="view === 'input'">
-        <label v-if="row.name" :for="row.name" class="text-sm font-normal capitalize dark:text-gray-100" :class="{'text-red-600': message}">{{
-                row.label ? row.label : row.name
-            }}
-            <span v-if="row.required" class="text-red-600 text-bold">*</span>
-        </label>
+        <ViltLabel :row="row" v-if="label"/>
         <div>
             <flat-pickr
                 v-model="value"
@@ -17,8 +13,7 @@
                 :class="{'border-danger-600 ring-danger-600' : message}"
             ></flat-pickr>
         </div>
-        <small v-if="row.hint" class="text-gray-400 mx-2">{{row.hint}}</small>
-        <JetInputError :message="message" />
+        <ViltError :row="row" :message="message" />
     </div>
     <div class="flex justify-between my-4 " v-if="view === 'view'">
         <div>
@@ -45,11 +40,15 @@ import JetInputError from "@@/Jetstream/InputError.vue";
 import flatPickr from "vue-flatpickr-component";
 import moment from "moment";
 import 'flatpickr/dist/flatpickr.css';
+import ViltLabel from "$$/ViltLabel.vue";
+import ViltError from "$$/ViltError.vue";
 
 export default defineComponent({
     components: {
         JetInputError,
         flatPickr,
+        ViltLabel,
+        ViltError
     },
     data() {
         return {
@@ -76,7 +75,7 @@ export default defineComponent({
         },
     },
     mounted() {
-        if(this.modelValue){
+        if(this.modelValue !== null){
             this.value = this.modelValue;
         }
         else {
@@ -99,6 +98,10 @@ export default defineComponent({
             String,
             default: null,
         },
+        label: {
+            Boolean,
+            default: true,
+        }
     },
     methods: {
         datefilter(value) {

@@ -1,10 +1,6 @@
 <template>
     <div class="py-2 px-2" v-if="view === 'input'">
-        <label v-if="row.name" :for="row.name" class="text-sm font-normal capitalize dark:text-gray-100" :class="{'text-red-600': message}">{{
-                row.label ? row.label : row.name
-            }}
-            <span v-if="row.required" class="text-red-600 text-bold">*</span>
-        </label>
+        <ViltLabel :row="row" v-if="label"/>
         <VueTelInput
             :disabled="row.disabled"
             v-model="value"
@@ -19,8 +15,7 @@
             :value="value"
             :class="{'border-danger-600 ring-danger-600' : message}"
         />
-        <small v-if="row.hint" class="text-gray-400 mx-2">{{row.hint}}</small>
-        <JetInputError :message="message" class="mt-2" />
+        <ViltError :row="row" :message="message" />
     </div>
     <div  v-if="view === 'view'" class="flex justify-between my-4" >
         <div>
@@ -40,11 +35,15 @@ import { defineComponent } from "vue";
 import JetInputError from "@@/Jetstream/InputError.vue";
 import { VueTelInput } from "vue3-tel-input";
 import "vue3-tel-input/dist/vue3-tel-input.css";
+import ViltLabel from "$$/ViltLabel.vue";
+import ViltError from "$$/ViltError.vue";
 
 export default defineComponent({
     components: {
         JetInputError,
         VueTelInput,
+        ViltLabel,
+        ViltError
     },
     data() {
         return {
@@ -68,7 +67,7 @@ export default defineComponent({
         },
     },
     mounted() {
-        if (this.modelValue) {
+        if (this.modelValue !== null) {
             this.value = this.modelValue;
         }
         else {
@@ -91,6 +90,10 @@ export default defineComponent({
             String,
             default: null,
         },
+        label: {
+            Boolean,
+            default: true,
+        }
     },
     methods: {
         updateData(number, phoneObject) {
