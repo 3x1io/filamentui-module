@@ -1,5 +1,5 @@
 {
-    "name": "FilamentUI",
+    "name": "Filamentui",
     "alias": "filamentui",
     "description": "Filament PHP UI kit for VILT stack",
     "keywords": [
@@ -21,7 +21,7 @@
     ],
     "priority": 0,
     "providers": [
-        "Modules\\FilamentUI\\Providers\\FilamentUIServiceProvider"
+        "Modules\\Filamentui\\Providers\\FilamentUIServiceProvider"
     ],
     "aliases": {},
     "files": [],

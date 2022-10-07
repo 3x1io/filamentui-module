@@ -5,6 +5,7 @@
         <div>
             <div
                 class="p-4 my-4 border rounded-lg"
+                v-if="main"
             >
                 <div v-for="(item, key) in row.options">
                     <ViltText v-if="item.vue === 'ViltText.vue'" :row="item" v-model="main[item.name]" />
@@ -65,10 +66,10 @@
                     :key="key"
                     class="py-2 px-2"
                 >
-                    <th class="border">
+                    <th class="border py-2 px-2">
                         {{item.label ? item.label : item.name}}
                     </th>
-                    <td class="border w-full">
+                    <td class="border w-full py-2 px-2">
                         <div v-if="item.vue === 'ViltMedia.vue'">
                             <img :src="main[item.name]" alt="" class="w-16" />
                         </div>

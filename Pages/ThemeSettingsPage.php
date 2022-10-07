@@ -1,9 +1,9 @@
 <?php
 
-namespace Modules\FilamentUI\Pages;
+namespace Modules\Filamentui\Pages;
 
 use Modules\Base\Services\Rows\Media;
-use Modules\FilamentUI\Settings\ThemeSettings;
+use Modules\Filamentui\Settings\ThemeSettings;
 use Modules\Base\Services\Rows\Text;
 use Modules\Settings\Services\Setting;
 
