@@ -1,5 +1,5 @@
 <?php
 
 return [
-    'name' => 'FilamentUI'
+    'name' => 'Filamentui'
 ];

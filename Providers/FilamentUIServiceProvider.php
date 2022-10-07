@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\FilamentUI\Providers;
+namespace Modules\Filamentui\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Factory;
@@ -13,7 +13,7 @@ class FilamentUIServiceProvider extends ServiceProvider
     /**
      * @var string $moduleName
      */
-    protected $moduleName = 'FilamentUI';
+    protected $moduleName = 'Filamentui';
 
     /**
      * @var string $moduleNameLower
