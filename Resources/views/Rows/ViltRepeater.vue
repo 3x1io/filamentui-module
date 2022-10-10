@@ -1,17 +1,17 @@
 <template>
-    <div class="py-2 px-2" v-if="view === 'input'">
+    <div class="px-2 py-2" v-if="view === 'input'">
         <ViltLabel :row="row" v-if="label" />
 
-        <div class="filament-forms-repeater-component space-y-6 rounded-xl">
+        <div class="space-y-6 filament-forms-repeater-component rounded-xl">
             <VueDraggableNext class="space-y-6" :list="main">
                 <div
 
-                    class="bg-white border border-gray-300 shadow-sm rounded-xl relative dark:bg-gray-800 dark:border-gray-600"
+                    class="relative bg-white border border-gray-300 shadow-sm rounded-xl dark:bg-gray-800 dark:border-gray-600"
                     v-for="(value, index) in main"
                     :key="index"
                 >
                     <header class="flex items-center h-10 overflow-hidden border-b bg-gray-50 rounded-t-xl dark:bg-gray-800 dark:border-gray-700">
-                        <button class="flex items-center justify-center flex-none w-10 h-10 text-gray-400 border-r transition hover:text-gray-300 dark:text-gray-400 dark:border-gray-700 dark:hover:text-gray-500">
+                        <button class="flex items-center justify-center flex-none w-10 h-10 text-gray-400 transition border-r hover:text-gray-300 dark:text-gray-400 dark:border-gray-700 dark:hover:text-gray-500">
                             <span class="sr-only">
                                 Move down
                             </span>
@@ -27,7 +27,7 @@
                             <li>
                                 <button
                                     @click.prevent="removeItem(value)"
-                                    class="flex items-center justify-center flex-none w-10 h-10 text-danger-600 transition hover:text-danger-500 dark:text-danger-500 dark:hover:text-danger-400"
+                                    class="flex items-center justify-center flex-none w-10 h-10 transition text-danger-600 hover:text-danger-500 dark:text-danger-500 dark:hover:text-danger-400"
                                 >
                                     <span class="sr-only">
                                         Delete
@@ -71,68 +71,63 @@
         <ViltError :row="row" :message="message" />
     </div>
 
-    <div class="flex justify-between my-4" v-if="view === 'view' && main">
-        <div class="flex justify-between my-4">
-            <div>
-                <p class="font-bold capitalize">{{ row.label ? row.label : row.name }}</p>
-            </div>
-            <div></div>
-        </div>
+    <div class="flex flex-col my-4 space-y-2" v-if="view === 'view' && main && main.length">
         <div>
-            <table class="w-full table-normal">
-                <thead>
-                    <tr v-for="(item, key) in row.options" :key="key">
-                        <th class="border">
-                            {{item.label ? item.label : item.name}}
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                <tr
-                    v-for="(value, key) in main"
-                    :key="key"
-                    class="py-2 px-2"
-                >
-                    <td class="border w-full" v-for="(item, key) in row.options" :key="key">
-                        <div v-if="item.vue === 'ViltMedia.vue'">
-                            <img :src="value[item.name]" alt="" class="w-16" />
-                        </div>
-                        <div v-else>
-                            <p v-if="value[item.name]" class="px-2 py-2">{{ value[item.name] }}</p>
-                        </div>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+            <p class="font-bold capitalize">{{ row.label ? row.label : row.name }}</p>
         </div>
-    </div>
-    <div v-if="view === 'table' && main">
-        <div class="mx-1 my-1">
-            <table class="w-full table-normal">
-                <thead>
+        <table class="w-full table-normal">
+            <thead>
                 <tr>
-                    <th class="border"  v-for="(item, key) in row.options" :key="key">
+                    <th class="w-full border"  v-for="(item, key) in row.options" :key="key">
                         {{item.label ? item.label : item.name}}
                     </th>
                 </tr>
-                </thead>
-                <tbody>
-                <tr
-                    v-for="(value, key) in main"
-                    :key="key"
-                    class="py-2 px-2"
-                >
-                    <td class="border w-full" v-for="(item, key) in row.options" :key="key">
-                        <div v-if="item.vue === 'ViltMedia.vue'">
-                            <img :src="value[item.name]" alt="" class="w-16" />
-                        </div>
-                        <div v-else>
-                            <p v-if="value[item.name]" class="px-2 py-2">{{ value[item.name] }}</p>
-                        </div>
-                    </td>
+            </thead>
+            <tbody>
+            <tr
+                v-for="(value, key) in main"
+                :key="key"
+                class="px-2 py-2"
+            >
+                <td class="w-full border" v-for="(item, key) in row.options" :key="key">
+                    <div v-if="item.vue === 'ViltMedia.vue'">
+                        <img :src="value[item.name]" alt="" class="w-16" />
+                    </div>
+                    <div v-else>
+                        <p v-if="value[item.name]" class="px-2 py-2">{{ value[item.name] }}</p>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div v-if="view === 'table' && main && main.length">
+        <div class="mx-1 my-1">
+            <table class="w-full table-normal">
+            <thead>
+                <tr>
+                    <th class="w-full border"  v-for="(item, key) in row.options" :key="key">
+                        {{item.label ? item.label : item.name}}
+                    </th>
                 </tr>
-                </tbody>
-            </table>
+            </thead>
+            <tbody>
+            <tr
+                v-for="(value, key) in main"
+                :key="key"
+                class="px-2 py-2"
+            >
+                <td class="w-full border" v-for="(item, key) in row.options" :key="key">
+                    <div v-if="item.vue === 'ViltMedia.vue'">
+                        <img :src="value[item.name]" alt="" class="w-16" />
+                    </div>
+                    <div v-else>
+                        <p v-if="value[item.name]" class="px-2 py-2">{{ value[item.name] }}</p>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
         </div>
     </div>
 </template>
@@ -195,17 +190,17 @@ export default defineComponent({
             }
         },
     },
-    mounted() {
-        if (this.modelValue !== null) {
+    beforeUpdate() {
+        if (this.modelValue) {
             this.main = this.modelValue;
         }
         else {
-            this.main = this.optionRows;
-        }
-    },
-    beforeUpdate() {
-        if (this.row.default) {
-            this.main = this.row.default;
+            if (this.row.default) {
+                this.main.push(this.row.default);
+            }
+            else {
+                this.main.push(this.optionRows);
+            }
         }
     },
     props: {
