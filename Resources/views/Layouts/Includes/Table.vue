@@ -194,7 +194,7 @@ let filterData = computed(()=>{
 <template>
     <div v-if="table.name === 'table'">
         <table
-            class="filament-tables-table w-full text-left rtl:text-right divide-y table-auto dark:divide-gray-700"
+            class="w-full text-left divide-y table-auto filament-tables-table rtl:text-right dark:divide-gray-700"
             v-if="dataLength"
         >
             <thead>
@@ -203,7 +203,7 @@ let filterData = computed(()=>{
                 >
                     <th
                         v-if="props.hasBulk"
-                        class="filament-tables-checkbox-cell w-4 px-4 whitespace-nowrap"
+                        class="w-4 px-4 filament-tables-checkbox-cell whitespace-nowrap"
                     >
                         <input
                             @change="bulkAll()"
@@ -213,7 +213,7 @@ let filterData = computed(()=>{
                         />
                     </th>
                     <th
-                        class="filament-tables-header-cell p-0 capitalize"
+                        class="p-0 capitalize filament-tables-header-cell"
                         v-for="(item, key) in listRows"
                         :key="key"
                     >
@@ -227,142 +227,132 @@ let filterData = computed(()=>{
                             :class="{
                                 'font-bold': store.orderBy == item.name,
                             }"
-                            class="flex items-center w-full px-4 py-2 whitespace-nowrap space-x-1 rtl:space-x-reverse font-medium text-sm text-gray-600 dark:text-gray-300 "
+                            class="flex items-center w-full px-4 py-2 space-x-1 text-sm font-medium text-gray-600 whitespace-nowrap rtl:space-x-reverse dark:text-gray-300 "
                         >
                             <span class="capitalize">{{ item.label ? item.label : item.name }}</span>
-                            <svg v-if="store.orderBy !== item.name" class="filament-tables-header-cell-sort-icon h-3 w-3 dark:text-gray-300 opacity-25" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                            <svg v-if="store.orderBy !== item.name"
+                                class="w-3 h-3 opacity-25 filament-tables-header-cell-sort-icon dark:text-gray-300"
+                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd"
+                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                    clip-rule="evenodd"></path>
                             </svg>
-                            <svg v-if="!desc && (store.orderBy == item.name)" class="filament-tables-header-cell-sort-icon h-3 w-3 dark:text-gray-300" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd"></path>
+                            <svg v-if="!desc && (store.orderBy == item.name)"
+                                class="w-3 h-3 filament-tables-header-cell-sort-icon dark:text-gray-300" xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd"
+                                    d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
+                                    clip-rule="evenodd"></path>
                             </svg>
-                            <svg v-else-if="desc && (store.orderBy == item.name)" class="filament-tables-header-cell-sort-icon h-3 w-3 dark:text-gray-300" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                            <svg v-else-if="desc && (store.orderBy == item.name)"
+                                class="w-3 h-3 filament-tables-header-cell-sort-icon dark:text-gray-300" xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd"
+                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                    clip-rule="evenodd"></path>
                             </svg>
-                        </button>
-                        <span
-                            v-else
-                            class="flex items-center w-full px-4 py-2 whitespace-nowrap space-x-1 rtl:space-x-reverse font-medium text-sm text-gray-600 dark:text-gray-300 "
-                        >
-                            {{ item.label ? item.label : item.name }}
-                        </span>
-                    </th>
-                    <slot name="th"></slot>
+                            </button>
+                            <span v-else
+                                class="flex items-center w-full px-4 py-2 space-x-1 text-sm font-medium text-gray-600 whitespace-nowrap rtl:space-x-reverse dark:text-gray-300 ">
+                                {{ item.label ? item.label : item.name }}
+                            </span>
+                            </th>
+                            <slot name="th"></slot>
 
-                    <th class="w-5">
-                    </th>
-                </tr>
-            </thead>
-            <tbody class="divide-y whitespace-nowrap dark:divide-gray-700">
-                <tr
-                    class="filament-tables-row hover:bg-gray-50 dark:hover:bg-gray-500/10"
-                    v-for="(item, key) in filterData"
-                    :key="key"
-                >
-                    <th
-                        v-if="props.hasBulk"
-                        class="filament-tables-checkbox-cell w-4 px-4 whitespace-nowrap"
-                    >
-                        <input
-                            @input="switchValue(item.id)"
-                            :checked="bulk[item.id]"
-                            class="block border-gray-300 rounded shadow-sm text-primary-600 focus:border-primary-600 focus:ring focus:ring-primary-200 focus:ring-opacity-50 table-row-checkbox"
-                            value="1"
-                            type="checkbox"
-                        />
-                    </th>
-                    <td
-                        v-for="(field, index) in listRows"
-                        :key="index"
-                        @click.prevent="props.roles.edit ? editItem(item) : null"
-                        class="w-full px-2 cursor-pointer"
-                    >
-                        <Component
-                            :is="field.vue.replace('.vue', '')"
-                            :row="field"
-                            v-model="item[field.name]"
-                            view="table"
-                        />
-                    </td>
-                    <slot name="td" :item="item" :key="index"></slot>
-                    <td
-                        v-if="
-                            $slots['actions'] ||
-                            props.roles.view ||
-                            props.roles.viewAny ||
-                            props.roles.edit ||
-                            props.roles.delete ||
-                            props.roles.deleteAny
-                        "
-                        class="px-4 py-3 whitespace-nowrap filament-tables-actions-cell"
-                        :class="{
-                            sorting: store.orderBy == item.field,
-                        }"
-                    >
-                        <div class="flex items-center justify-end gap-4 my-auto">
-                            <slot name="actions" v-bind="item"></slot>
-                            <div v-if="props.roles.view || props.roles.viewAny">
-                                <button
+                            <th class="w-5">
+                            </th>
+                            </tr>
+                            </thead>
+                            <tbody class="divide-y whitespace-nowrap dark:divide-gray-700">
+                                <tr class="filament-tables-row hover:bg-gray-50 dark:hover:bg-gray-500/10" v-for="(item, key) in filterData"
+                                    :key="key">
+                                    <th v-if="props.hasBulk" class="w-4 px-4 filament-tables-checkbox-cell whitespace-nowrap">
+                                        <input @input="switchValue(item.id)" :checked="bulk[item.id]"
+                                            class="block border-gray-300 rounded shadow-sm text-primary-600 focus:border-primary-600 focus:ring focus:ring-primary-200 focus:ring-opacity-50 table-row-checkbox"
+                                            value="1" type="checkbox" />
+                                    </th>
+                                    <td v-for="(field, index) in listRows" :key="index" @click.prevent="props.roles.edit ? editItem(item) : null"
+                                        class="w-full px-2 cursor-pointer">
+                                        <Component :is="field.vue.replace('.vue', '')" :row="field" v-model="item[field.name]" view="table" />
+                                    </td>
+                                    <slot name="td" :item="item" :key="index"></slot>
+                                    <td v-if="
+                                                        $slots['actions'] ||
+                                                        props.roles.view ||
+                                                        props.roles.viewAny ||
+                                                        props.roles.edit ||
+                                                        props.roles.delete ||
+                                                        props.roles.deleteAny
+                                                    " class="px-4 py-3 whitespace-nowrap filament-tables-actions-cell" :class="{
+                                                        sorting: store.orderBy == item.field,
+                                                    }">
+                                        <div class="flex items-center justify-end gap-4 my-auto">
+                                            <slot name="actions" v-bind="item"></slot>
+                                            <div v-if="props.roles.view || props.roles.viewAny">
+                                                <button @click.prevent="viewItem(item)"
+                                                    class="filament-link inline-flex items-center justify-center gap-0.5 font-medium hover:underline focus:outline-none focus:underline text-sm text-gray-600 hover:text-gray-500 dark:text-gray-300 dark:hover:text-gray-200 filament-tables-link-action">
+                                                    <svg class="w-4 h-4 mr-1 filament-link-icon rtl:ml-1" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                        <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
+                                                        <path fill-rule="evenodd"
+                                                            d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
+                                                            clip-rule="evenodd"></path>
+                                                    </svg>
+                                                    {{ trans('global.view') }}
+                                                </button>
+                                            </div>
+                                            <div v-if="props.roles.edit">
+                                                <button @click.prevent="editItem(item)"
+                                                    class="filament-link inline-flex items-center justify-center gap-0.5 font-medium hover:underline focus:outline-none focus:underline text-sm text-primary-600 hover:text-primary-500 dark:text-primary-500 dark:hover:text-primary-400 filament-tables-link-action"
+                                                    role="button">
+                                                    <svg class="w-4 h-4 mr-1 filament-link-icon rtl:ml-1" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                        <path
+                                                            d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z">
+                                                        </path>
+                                                    </svg>
+                                                    {{ trans('global.edit') }}
+                                                </button>
+                                            </div>
+                                            <form v-if="
+                                                                    props.roles.delete || props.roles.deleteAny
+                                                                ">
+                                                <button @click.prevent="deleteItem(item)" type="submit"
+                                                    class="filament-link inline-flex items-center justify-center gap-0.5 font-medium hover:underline focus:outline-none focus:underline text-sm text-danger-600 hover:text-danger-500 dark:text-danger-500 dark:hover:text-danger-400 filament-tables-link-action">
+                                                    <svg class="w-4 h-4 mr-1 filament-link-icon rtl:ml-1" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                        <path fill-rule="evenodd"
+                                                            d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                                                            clip-rule="evenodd"></path>
+                                                    </svg>
+                                                    {{ trans('global.delete') }}
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            </table>
+                            <div class="relative p-8 text-center" v-else>
+                                <div class="flex items-center justify-center p-4">
+                                    <div
+                                        class="flex flex-col items-center justify-center flex-1 p-6 mx-auto space-y-6 text-center bg-white filament-tables-empty-state dark:bg-gray-800">
+                                        <div
+                                            class="flex items-center justify-center w-16 h-16 rounded-full text-primary-500 bg-primary-50 dark:bg-gray-700">
+                                            <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                                                stroke="currentColor" aria-hidden="true">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+                                            </svg>
 
-                                    @click.prevent="viewItem(item)"
-                                    class="filament-link inline-flex items-center justify-center gap-0.5 font-medium hover:underline focus:outline-none focus:underline text-sm text-gray-600 hover:text-gray-500 dark:text-gray-300 dark:hover:text-gray-200 filament-tables-link-action"
-                                >
-                                    <svg class="filament-link-icon w-4 h-4 mr-1 rtl:ml-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                        <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
-                                        <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"></path>
-                                    </svg>
-                                    {{ trans('global.view') }}
-                                </button>
-                            </div>
-                            <div v-if="props.roles.edit">
-                                <button
+                                        </div>
 
-                                    @click.prevent="editItem(item)"
-                                    class="filament-link inline-flex items-center justify-center gap-0.5 font-medium hover:underline focus:outline-none focus:underline text-sm text-primary-600 hover:text-primary-500 dark:text-primary-500 dark:hover:text-primary-400 filament-tables-link-action"
-                                    role="button"
-                                >
-                                    <svg class="filament-link-icon w-4 h-4 mr-1 rtl:ml-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                        <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
-                                    </svg>
-                                    {{ trans('global.edit') }}
-                                </button>
-                            </div>
-                            <form v-if="
-                                        props.roles.delete || props.roles.deleteAny
-                                    ">
-                                <button
+                                        <div class="max-w-md space-y-1">
+                                            <h2 class="text-xl font-bold tracking-tight filament-tables-empty-state-heading dark:text-white">
+                                                {{ trans('global.empty') }}
+                                            </h2>
 
-                                    @click.prevent="deleteItem(item)"
-                                    type="submit"
-                                    class="filament-link inline-flex items-center justify-center gap-0.5 font-medium hover:underline focus:outline-none focus:underline text-sm text-danger-600 hover:text-danger-500 dark:text-danger-500 dark:hover:text-danger-400 filament-tables-link-action"
-                                >
-                                    <svg class="filament-link-icon w-4 h-4 mr-1 rtl:ml-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                        <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-                                    </svg>
-                                    {{ trans('global.delete') }}
-                                </button>
-                            </form>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <div class="relative p-8 text-center" v-else>
-            <div class="flex items-center justify-center p-4">
-                <div class="filament-tables-empty-state flex flex-1 flex-col items-center justify-center p-6 mx-auto space-y-6 text-center bg-white dark:bg-gray-800">
-                    <div class="flex items-center justify-center w-16 h-16 text-primary-500 rounded-full bg-primary-50 dark:bg-gray-700">
-                        <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-
-                    </div>
-
-                    <div class="max-w-md space-y-1">
-                        <h2 class="filament-tables-empty-state-heading text-xl font-bold tracking-tight dark:text-white">
-                            {{ trans('global.empty') }}
-                        </h2>
-
-                        <p class="filament-tables-empty-state-description whitespace-normal text-sm font-medium text-gray-500 dark:text-gray-400">
+                                            <p
+                                                class="text-sm font-medium text-gray-500 whitespace-normal filament-tables-empty-state-description dark:text-gray-400">
 
                         </p>
                     </div>
@@ -392,6 +382,7 @@ import ViltRich from '$$/ViltRich.vue';
 import ViltRelation from '$$/ViltRelation.vue';
 import ViltHasOne from '$$/ViltHasOne.vue';
 import ViltSlug from '$$/ViltSlug.vue';
+import ViltIcon from '$$/ViltIcon.vue';
 
 export  default {
     components: {
@@ -413,6 +404,7 @@ export  default {
         ViltRelation,
         ViltHasOne,
         ViltSlug,
+        ViltIcon,
     }
 }
 </script>

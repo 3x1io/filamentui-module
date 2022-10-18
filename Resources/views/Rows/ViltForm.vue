@@ -1,9 +1,27 @@
 <template>
     <div>
         <div v-for="(item, key) in rows" :key="key">
-            <Component v-if="item.vue === 'ViltHasOne.vue'" :is="item.vue.replace('.vue', '')" :row="item" :view="view" @update:modelValue="update" v-model="form[item.name]" :message="errors[item.name]"></Component>
-            <Component v-else-if="item.vue === 'ViltSlug.vue'" :is="item.vue.replace('.vue', '')" :row="item" :view="view" @update:modelValue="update" v-model="form[item.name]" :message="errors[item.name]"></Component>
-            <Component v-else :is="item.vue.replace('.vue', '')" :row="item" :view="view" @update:modelValue="update" v-model="form[item.name]" :message="errors[item.name]"></Component>
+            <div v-if="item.reactive">
+                <Component
+                    v-if="item.vue === 'ViltHasOne.vue' && form[item.reactiveRow] && form[item.reactiveRow][item.reactiveBy] === item.reactiveWhere"
+                    :is="item.vue.replace('.vue', '')" :row="item" :view="view" @update:modelValue="update"
+                    v-model="form[item.name]" :message="errors[item.name]"></Component>
+                <Component
+                    v-else-if="item.vue === 'ViltSlug.vue' && form[item.reactiveRow] && form[item.reactiveRow][item.reactiveBy] === item.reactiveWhere"
+                    :is="item.vue.replace('.vue', '')" :row="item" :view="view" @update:modelValue="update"
+                    v-model="form[item.name]" :message="errors[item.name]"></Component>
+                <Component v-else-if="form[item.reactiveRow] && form[item.reactiveRow][item.reactiveBy] === item.reactiveWhere"
+                    :is="item.vue.replace('.vue', '')" :row="item" :view="view" @update:modelValue="update"
+                    v-model="form[item.name]" :message="errors[item.name]"></Component>
+            </div>
+            <div v-if="!item.reactive">
+                <Component v-if="item.vue === 'ViltHasOne.vue'" :is="item.vue.replace('.vue', '')" :row="item" :view="view"
+                    @update:modelValue="update" v-model="form[item.name]" :message="errors[item.name]"></Component>
+                <Component v-else-if="item.vue === 'ViltSlug.vue'" :is="item.vue.replace('.vue', '')" :row="item" :view="view"
+                    @update:modelValue="update" v-model="form[item.name]" :message="errors[item.name]"></Component>
+                <Component v-else :is="item.vue.replace('.vue', '')" :row="item" :view="view" @update:modelValue="update"
+                    v-model="form[item.name]" :message="errors[item.name]"></Component>
+            </div>
         </div>
     </div>
 </template>
@@ -29,6 +47,7 @@ import ViltRich from '$$/ViltRich.vue';
 import ViltRelation from '$$/ViltRelation.vue';
 import ViltHasOne from '$$/ViltHasOne.vue';
 import ViltSlug from '$$/ViltSlug.vue';
+import ViltIcon from '$$/ViltIcon.vue';
 
 export default defineComponent({
     components: {
@@ -51,6 +70,7 @@ export default defineComponent({
         ViltRelation,
         ViltHasOne,
         ViltSlug,
+        ViltIcon,
     },
     data() {
         return {
@@ -85,11 +105,11 @@ export default defineComponent({
             let rows = this.$props.rows;
             let getRows = {};
             for (let i = 0; i < rows.length; i++) {
-                if(rows[i].default){
+                if (rows[i].default) {
                     getRows[rows[i].name] = rows[i].default;
                 }
                 else {
-                    if(rows[i].vue === 'ViltRelation.vue' || rows[i].vue === 'ViltRepeater.vue' || rows[i].vue === 'ViltSchema.vue'){
+                    if (rows[i].vue === 'ViltRelation.vue' || rows[i].vue === 'ViltRepeater.vue' || rows[i].vue === 'ViltSchema.vue') {
                         getRows[rows[i].name] = [];
                     }
                     else {
