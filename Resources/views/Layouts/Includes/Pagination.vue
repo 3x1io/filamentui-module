@@ -76,9 +76,9 @@ onMounted(() => {
 </script>
 <template>
     <div class="p-2 dark:border-gray-700">
-        <nav role="navigation" aria-label="Pagination Navigation" class="filament-tables-pagination flex items-center justify-between">
-            <div class="mx-auto flex-1 items-center lg:grid grid-cols-3">
-                <div class="flex items-center justify-center lg:justify-start my-4 mx-4">
+        <nav role="navigation" aria-label="Pagination Navigation" class="flex items-center justify-between filament-tables-pagination">
+            <div class="items-center flex-1 grid-cols-3 mx-auto lg:grid">
+                <div class="flex items-center justify-center mx-4 my-4 lg:justify-start">
                     <div class="pl-2 text-sm font-medium dark:text-white">
                         {{ trans('global.show') }} {{ collection.from }}
                         {{ trans('global.to') }} {{ collection.to }}
@@ -88,17 +88,16 @@ onMounted(() => {
                     </div>
                 </div>
 
-                <div class="flex items-center justify-center  my-4 mx-4">
+                <div class="flex items-center justify-center mx-4 my-4">
                     <div class="flex items-center space-x-2 filament-tables-pagination-records-per-page-selector rtl:space-x-reverse">
                         <select
                             v-model="per_page"
                             @change="makeReload('perPage')"
-                            id="tableRecordsPerPageSelect" class="h-8 text-sm pr-8 leading-none transition duration-75 border-gray-300 rounded-lg shadow-sm focus:border-primary-500 focus:ring-1 focus:ring-inset focus:ring-primary-500 dark:text-white dark:bg-gray-700 dark:border-gray-600 dark:focus:border-primary-500">
+                            id="tableRecordsPerPageSelect" class="h-8 pr-8 text-sm leading-none transition duration-75 border-gray-300 rounded-lg shadow-sm focus:border-primary-500 focus:ring-1 focus:ring-inset focus:ring-primary-500 dark:text-white dark:bg-gray-700 dark:border-gray-600 dark:focus:border-primary-500">
                             <option value="5">5</option>
                             <option value="10">10</option>
                             <option value="25">25</option>
                             <option value="50">50</option>
-                            <option value="-1">All</option>
                         </select>
 
                         <label for="tableRecordsPerPageSelect" class="text-sm font-medium dark:text-white">
@@ -107,9 +106,9 @@ onMounted(() => {
                     </div>
                 </div>
 
-                <div class="flex items-center justify-center lg:justify-end  my-4 mx-4" v-show="collection.total > collection.per_page">
+                <div class="flex items-center justify-center mx-4 my-4 lg:justify-end" v-show="collection.total > collection.per_page">
                     <div class="py-3 border rounded-lg dark:border-gray-600">
-                        <ol class="flex items-center text-sm text-gray-500 divide-x rtl:divide-x-reverse divide-gray-300 dark:text-gray-400 dark:divide-gray-600">
+                        <ol class="flex items-center text-sm text-gray-500 divide-x divide-gray-300 rtl:divide-x-reverse dark:text-gray-400 dark:divide-gray-600">
 
                             <li>
                                 <!-- v-show="collection.current_page !== 1" -->
