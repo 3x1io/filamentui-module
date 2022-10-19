@@ -2,11 +2,13 @@
 
 namespace Modules\Filamentui\Providers;
 
+use Modules\Base\Services\Core\VILT;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Factory;
 use Modules\Base\Services\Components\Base\Lang;
 use Modules\Base\Services\Components\Base\Share;
-use Modules\Base\Services\Core\VILT;
 
 class FilamentUIServiceProvider extends ServiceProvider
 {
@@ -42,6 +44,14 @@ class FilamentUIServiceProvider extends ServiceProvider
         VILT::loadResources($this->moduleName);
         VILT::loadPages($this->moduleName);
         VILT::registerTranslation(Lang::make('theme.sidebar')->label(__('Theme Setting')));
+
+        if (!empty(Cookie::get('lang'))) {
+            $local = explode('|', Crypt::decrypt(Cookie::get('lang'), false))[1];
+        } else {
+            $local = "en";
+        }
+
+        app()->setLocale($local);
     }
 
     /**

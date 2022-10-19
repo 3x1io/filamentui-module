@@ -1,7 +1,7 @@
 <script setup>
 import {ref, computed, watch, onMounted} from 'vue';
 import VueEasyLightbox from 'vue-easy-lightbox';
-import {useForm, usePage} from "@inertiajs/inertia-vue3";
+import { useForm, usePage, Head } from "@inertiajs/inertia-vue3";
 import {Inertia} from "@inertiajs/inertia";
 import {useGetForm} from "@@/Composables/useGetForm";
 import { useResourceStore } from '@@/Stores/resourceStore';
@@ -566,6 +566,7 @@ function activeSelectedAction(row, item, value, index){
         ></vue-easy-lightbox>
         <div class="filament-page filament-resources-list-records-page" :class="'filament-resources-'+props.list.url">
             <!-- Main Resource Header -->
+            <Head :title="rLang ? rLang.index : ''"></Head>
             <Header
                 v-if="rLang"
                 :canCreate="roles.create ? roles.create : false"
@@ -608,12 +609,12 @@ function activeSelectedAction(row, item, value, index){
                     :key="index"
                     :href="action.url ? action.url : '#'"
                     @click.prevent="
-                            !action.url
-                                ? action.modal
-                                    ? openModal(action.modal, null, action.confirmed)
-                                    : fireAction(action.action, null, action.confirmed, action.actionMethod)
-                                : openUrl(action.url, action.confirmed)
-                        "
+                        !action.url
+                            ? action.modal
+                                ? openModal(action.modal, null, action.confirmed)
+                                : fireAction(action.action, null, action.confirmed, action.actionMethod)
+                            : openUrl(action.url, action.confirmed)
+                    "
                 >
                 <i v-if="action.icon" :class="action.icon" style="font-size: 20px"></i>
                 <span class="">
@@ -623,33 +624,20 @@ function activeSelectedAction(row, item, value, index){
             </Header>
 
             <!-- Widgets Generator -->
-            <div class="filament-widgets-container grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-8 mb-6" v-if="widgets.length">
+            <div class="grid grid-cols-1 gap-4 mb-6 filament-widgets-container lg:grid-cols-2 lg:gap-8" v-if="widgets.length">
                 <div class="filament-widget col-span-full filament-stats-overview-widget">
                     <div>
-                        <div class="
-                        filament-stats
-                        grid
-                        gap-4
-                        lg:gap-8
-                        md:grid-cols-4
-                        "
+                        <div class="grid gap-4 filament-stats lg:gap-8 md:grid-cols-4"
                         >
-                            <div v-for="(item, key) in widgets" class="
-                            filament-stats-card
-                            relative
-                            p-6
-                            rounded-2xl
-                            bg-white
-                            shadow
-                            dark:bg-gray-800
-                            filament-stats-overview-widget-card"
-                             :class="{
-                                'col-span-4 lg:col-span-4 md:col-span-4 sm:col-span-4': widgets.length === 1,
-                                'col-span-4 lg:col-span-2 md:col-span-2 sm:col-span-2': widgets.length === 2,
-                            }"
-                            >
+                            <div v-for="(item, key) in widgets"
+                                class="relative p-6 bg-white shadow filament-stats-card rounded-2xl dark:bg-gray-800 filament-stats-overview-widget-card"
+                                :class="{
+                                                             'col-span-4 lg:col-span-4 md:col-span-4 sm:col-span-4': widgets.length === 1,
+                                                             'col-span-4 lg:col-span-2 md:col-span-2 sm:col-span-2': widgets.length === 2,
+                                                         }">
                                 <div class="space-y-2">
-                                    <div class="flex items-center space-x-2 rtl:space-x-reverse text-sm font-medium text-gray-500 dark:text-gray-200">
+                                    <div
+                                        class="flex items-center space-x-2 text-sm font-medium text-gray-500 rtl:space-x-reverse dark:text-gray-200">
 
                                         <span>{{item.label}}</span>
                                     </div>
@@ -658,14 +646,13 @@ function activeSelectedAction(row, item, value, index){
                                         {{item.value}}
                                     </div>
 
-                                    <div v-if="item.icon || item.description" class="flex items-center space-x-1 rtl:space-x-reverse text-sm font-medium "
-                                        :class="{
-                                            'text-success-600': item.type === 'success',
-                                            'text-danger-600': item.type === 'danger',
-                                            'text-primary-600': item.type === 'primary',
-                                            'text-warning-600': item.type === 'warning',
-                                        }"
-                                    >
+                                    <div v-if="item.icon || item.description"
+                                        class="flex items-center space-x-1 text-sm font-medium rtl:space-x-reverse " :class="{
+                                                                        'text-success-600': item.type === 'success',
+                                                                        'text-danger-600': item.type === 'danger',
+                                                                        'text-primary-600': item.type === 'primary',
+                                                                        'text-warning-600': item.type === 'warning',
+                                                                    }">
                                         <i v-if="item.icon" class="w-4 h-4 " :class="item.icon" style="font-size:16px"></i>
                                         <span v-if="item.description">{{item.description}}</span>
                                     </div>
@@ -673,78 +660,58 @@ function activeSelectedAction(row, item, value, index){
                                 </div>
 
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+                            </div>
+                            </div>
+                            </div>
+                            </div>
+                            </div>
 
-        <div  class="filament-tables-component my-4">
-            <div class="border border-gray-300 shadow-sm bg-white rounded-xl filament-tables-container dark:bg-gray-800 dark:border-gray-700">
-                <div>
-                    <div class="flex items-center justify-between p-2 h-14">
-                        <div class="flex items-center gap-2">
-                            <Bulk
-                                :bulk="bulkItems"
-                                :show="showBlukModal"
-                                :collection="props.collection"
-                                @close="showBlukModal = !showBlukModal"
-                            >
-                                <button v-if="roles.deleteAny" @click="bulkAction('delete')" type="button" class="filament-dropdown-item flex items-center w-full h-8 px-3 text-sm font-medium group whitespace-nowrap focus:outline-none hover:text-white focus:text-white hover:bg-danger-600 focus:bg-danger-700">
-                                    <svg class="mr-2 -ml-1 w-5 h-5 flex-shrink-0 rtl:ml-2 rtl:-mr-1 group-hover:text-white group-focus:text-white text-danger-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                        <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-                                    </svg>
-                                    <span class="truncate">
-                                        {{ rLang.bulk }}
-                                    </span>
-                                </button>
-                            </Bulk>
-                        </div>
+                            <div class="my-4 filament-tables-component">
+                                <div
+                                    class="bg-white border border-gray-300 shadow-sm rounded-xl filament-tables-container dark:bg-gray-800 dark:border-gray-700">
+                                    <div>
+                                        <div class="flex items-center justify-between p-2 h-14">
+                                            <div class="flex items-center gap-2">
+                                                <Bulk :bulk="bulkItems" :show="showBlukModal" :collection="props.collection"
+                                                    @close="showBlukModal = !showBlukModal">
+                                                    <button v-if="roles.deleteAny" @click="bulkAction('delete')" type="button"
+                                                        class="flex items-center w-full h-8 px-3 text-sm font-medium filament-dropdown-item group whitespace-nowrap focus:outline-none hover:text-white focus:text-white hover:bg-danger-600 focus:bg-danger-700">
+                                                        <svg class="flex-shrink-0 w-5 h-5 mr-2 -ml-1 rtl:ml-2 rtl:-mr-1 group-hover:text-white group-focus:text-white text-danger-500"
+                                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                                                            aria-hidden="true">
+                                                            <path fill-rule="evenodd"
+                                                                d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                                                                clip-rule="evenodd"></path>
+                                                        </svg>
+                                                        <span class="truncate">
+                                                            {{ rLang.bulk }}
+                                                        </span>
+                                                    </button>
+                                                </Bulk>
+                                            </div>
 
 
-                        <div class="w-full flex items-center justify-end gap-2 md:max-w-md">
-                            <Filters
-                                :showFilter="
-                                    (props.render.table.filters &&
-                                    props.render.table.filters.length)? true : false
-                                "
-                                :setSearch="search"
-                                :rows="rows"
-                                :url="props.list.url"
-                                @reset="resetFilter"
-                            >
-                                <ViltForm
-                                    v-for="(filter, key) in props.render.table.filters"
-                                    v-model="filtersObj[filter.name]"
-                                    :rows="filter.rows"
-                                    :key="key"
-                                    @update:modelValue="setFilter(filter)"
-                                />
-                            </Filters>
-                        </div>
-                    </div>
-                </div>
-                <!-- Table -->
-                <div class="overflow-y-auto relative dark:border-gray-700 border-t">
-                    <List
-                        @media="popUp"
-                        :roles="roles"
-                        :table="props.render.table"
-                        :rows="props.rows"
-                        :collection="props.collection"
-                        :bulk="bulkItems"
-                        :url="props.list.url"
-                        :desc="desc"
-                        @reload="reloadList"
-                        @view="viewItem"
-                        @edit="editItem"
-                        @delete="deleteItem"
-                        @all="bulkAll"
-                        @switch="switchBulk"
-                    >
-                        <template v-if="props.render.table.rows && props.render.table.rows.length" #th>
-                            <th class="filament-tables-header-cell p-0 capitalize" v-for="(th, key) in props.render.table.rows" :key="key">
-                                <span class="flex items-center w-full px-4 py-2 whitespace-nowrap space-x-1 rtl:space-x-reverse font-medium text-sm text-gray-600 dark:text-gray-300 ">
+                                            <div class="flex items-center justify-end w-full gap-2 md:max-w-md">
+                                                <Filters :showFilter="
+                                                                (props.render.table.filters &&
+                                                                props.render.table.filters.length)? true : false
+                                                            " :setSearch="search" :rows="rows" :url="props.list.url" @reset="resetFilter">
+                                                    <ViltForm v-for="(filter, key) in props.render.table.filters" v-model="filtersObj[filter.name]"
+                                                        :rows="filter.rows" :key="key" @update:modelValue="setFilter(filter)" />
+                                                </Filters>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Table -->
+                                    <div class="relative overflow-y-auto border-t dark:border-gray-700">
+                                        <List @media="popUp" :roles="roles" :table="props.render.table" :rows="props.rows"
+                                            :collection="props.collection" :bulk="bulkItems" :url="props.list.url" :desc="desc" @reload="reloadList"
+                                            @view="viewItem" @edit="editItem" @delete="deleteItem" @all="bulkAll" @switch="switchBulk">
+                                            <template v-if="props.render.table.rows && props.render.table.rows.length" #th>
+                                                <th class="p-0 capitalize filament-tables-header-cell" v-for="(th, key) in props.render.table.rows"
+                                                    :key="key">
+                                                    <span
+                                                        class="flex items-center w-full px-4 py-2 space-x-1 text-sm font-medium text-gray-600 whitespace-nowrap rtl:space-x-reverse dark:text-gray-300 ">
                                    {{th.label}}
                                 </span>
                             </th>
@@ -767,12 +734,12 @@ function activeSelectedAction(row, item, value, index){
                                 <button
                                     v-if="action.can"
                                     @click.prevent="
-                                        !action.url
-                                          ? action.modal
-                                            ? openModal(action.modal, id, action.confirmed)
-                                            : fireAction(action.action, id, action.confirmed, action.actionMethod)
-                                          : openUrl(action.url +'/'+id, action.confirmed)
-                                      "
+                                      !action.url
+                                        ? action.modal
+                                          ? openModal(action.modal, id, action.confirmed)
+                                          : fireAction(action.action, id, action.confirmed, action.actionMethod)
+                                        : openUrl(action.url +'/'+id, action.confirmed)
+                                    "
                                     class="filament-link inline-flex items-center justify-center gap-0.5 font-medium hover:underline focus:outline-none focus:underline text-sm dark:text-primary-500 dark:hover:text-primary-400 filament-tables-link-action"
                                     :class="'text-' + action.type + '-700 hover:text-' + action.type + '-600'"
                                     role="button"
@@ -837,7 +804,7 @@ function activeSelectedAction(row, item, value, index){
         >
             <template #title>
                 <div class="flex justify-between">
-                    <h2 class="filament-modal-heading text-xl font-bold tracking-tight">{{ item.label }}</h2>
+                    <h2 class="text-xl font-bold tracking-tight filament-modal-heading">{{ item.label }}</h2>
                 </div>
             </template>
 
@@ -855,7 +822,7 @@ function activeSelectedAction(row, item, value, index){
             </template>
 
             <template #footer>
-                <div class="filament-modal-actions flex flex-wrap items-center gap-4 rtl:space-x-reverse">
+                <div class="flex flex-wrap items-center gap-4 filament-modal-actions rtl:space-x-reverse">
                     <button
                         class="filament-button inline-flex items-center justify-center py-1 gap-1 font-medium rounded-lg border transition-colors focus:outline-none focus:ring-offset-2 focus:ring-2 focus:ring-inset dark:focus:ring-offset-0 min-h-[2.25rem] px-4 text-sm text-white shadow focus:ring-white border-transparent bg-primary-600 hover:bg-primary-500 focus:bg-primary-700 focus:ring-offset-primary-700 filament-page-modal-button-action"
                         v-for="(button, key) in item.buttons"
@@ -880,10 +847,10 @@ function activeSelectedAction(row, item, value, index){
         >
             <template #content>
                 <div class="p-4 space-y-2 text-center dark:text-white">
-                    <h2 class="filament-modal-heading text-xl font-bold tracking-tight" id="ozo9fHMwMlC1FjErUz3l-table-bulk-action.heading">
+                    <h2 class="text-xl font-bold tracking-tight filament-modal-heading" id="ozo9fHMwMlC1FjErUz3l-table-bulk-action.heading">
                         Action
                     </h2>
-                    <h3 class="filament-modal-subheading text-gray-500">
+                    <h3 class="text-gray-500 filament-modal-subheading">
                         Do You Went to Process This Action?
                     </h3>
                 </div>
