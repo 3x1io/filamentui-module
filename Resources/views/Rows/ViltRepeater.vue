@@ -89,7 +89,7 @@
                 :key="key"
                 class="px-2 py-2"
             >
-                <td class="w-full border" v-for="(item, key) in row.options" :key="key">
+                <td class="w-full border" v-for="(item, index) in row.options" :key="index">
                     <div v-if="item.vue === 'ViltMedia.vue'">
                         <img :src="value[item.name]" alt="" class="w-16" />
                     </div>
@@ -117,7 +117,7 @@
                 :key="key"
                 class="px-2 py-2"
             >
-                <td class="w-full border" v-for="(item, key) in row.options" :key="key">
+                <td class="w-full border" v-for="(item, index) in row.options" :key="index">
                     <div v-if="item.vue === 'ViltMedia.vue'">
                         <img :src="value[item.name]" alt="" class="w-16" />
                     </div>
