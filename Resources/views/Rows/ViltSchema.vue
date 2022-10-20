@@ -141,16 +141,16 @@ export default defineComponent({
         },
     },
     mounted() {
-        if (this.modelValue !== null) {
+        this.main = this.optionRows;
+    },
+    beforeUpdate() {
+        if (this.modelValue !== null && typeof this.modelValue === 'Array' && this.modelValue.length) {
             this.main = this.modelValue;
         }
         else {
-            this.main = this.optionRows;
-        }
-    },
-    beforeUpdate() {
-        if (this.row.default) {
-            this.main = this.row.default;
+            if (this.row.default) {
+                this.main = this.row.default;
+            }
         }
     },
     props: {
