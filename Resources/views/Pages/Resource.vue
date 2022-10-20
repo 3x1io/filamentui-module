@@ -131,7 +131,7 @@ function openModal(name, id = null, confirmed=false){
     }
 }
 
-function fireAction (name, id = null, confirmed=false, method){
+function fireAction (name, id = null, confirmed=false, method="post"){
     getAction.value = {};
     if(confirmed){
         getAction.value = {id: id, name: name, type: 'action'};
@@ -154,7 +154,7 @@ function fireAction (name, id = null, confirmed=false, method){
     }
 }
 
-function modalActionRun(modal, action, confirmed=false) {
+function modalActionRun(modal, action, confirmed=false, method="post") {
     getAction.value = {};
     if(confirmed){
         getAction.value = {modal: modal, action: action, type: 'action'};
@@ -165,14 +165,27 @@ function modalActionRun(modal, action, confirmed=false) {
             modalAction.value[modal].id = selectedID.value;
         }
         let form = useForm(modalAction.value[modal]);
-        Inertia.post(route(action), form,{
-            preserveScroll: true,
-            onSuccess: () => {
-                form.reset();
-                actionModal.value[modal] = false;
-                success();
-            },
-        });
+        if(method==="post"){
+            Inertia.post(route(action), form,{
+                preserveScroll: true,
+                onSuccess: () => {
+                    form.reset();
+                    actionModal.value[modal] = false;
+                    success();
+                },
+            });
+        }
+        else {
+            Inertia.get(route(action), form,{
+                preserveScroll: true,
+                onSuccess: () => {
+                    form.reset();
+                    actionModal.value[modal] = false;
+                    success();
+                },
+            });
+        }
+
     }
 }
 

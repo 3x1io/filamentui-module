@@ -25,6 +25,7 @@
                         <ViltRich v-if="row.vue === 'ViltRich.vue'"  :row="row" v-model="item[row.name]" view="view"/>
                         <ViltRelation v-if="row.vue === 'ViltRelation.vue'"  :row="row" v-model="item[row.name]" view="view"/>
                         <ViltHasOne v-if="row.vue === 'ViltHasOne.vue'"  :row="row" v-model="item[row.name]" view="view"/>
+                        <ViltIcon v-if="row.vue === 'ViltIcon.vue'"  :row="row" v-model="item[row.name]" view="view"/>
                     </div>
                 </div>
             </div>
@@ -64,6 +65,7 @@ import ViltSchema from "$$/ViltSchema.vue";
 import ViltRich from "$$/ViltRich.vue";
 import ViltRelation from "$$/ViltRelation.vue";
 import ViltHasOne from "$$/ViltHasOne.vue";
+import ViltIcon from "$$/ViltIcon.vue";
 
 export default defineComponent({
     components: {
@@ -88,6 +90,7 @@ export default defineComponent({
         ViltSchema,
         ViltRich,
         ViltRelation,
+        ViltIcon,
     },
     props: {
         show: Boolean,

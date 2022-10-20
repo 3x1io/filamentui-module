@@ -41,7 +41,7 @@
                     :key="key"
                     class="py-2 px-2"
                 >
-                    <th class="border">
+                    <th class="border p-2">
                         {{item.label ? item.label : item.name}}
                     </th>
                     <td class="border w-full">
@@ -144,7 +144,7 @@ export default defineComponent({
         this.main = this.optionRows;
     },
     beforeUpdate() {
-        if (this.modelValue !== null && typeof this.modelValue === 'Array' && this.modelValue.length) {
+        if (this.modelValue !== null && typeof this.modelValue === 'object' && Object.keys(this.modelValue).length) {
             this.main = this.modelValue;
         }
         else {

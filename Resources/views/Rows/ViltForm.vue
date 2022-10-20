@@ -1,16 +1,16 @@
 <template>
     <div>
-        <div v-for="(item, key) in rows" :key="key">
+        <div v-for="(item, key) in getFinalRows" :key="key">
             <div v-if="item.reactive">
                 <Component
-                    v-if="item.vue === 'ViltHasOne.vue' && form[item.reactiveRow] && form[item.reactiveRow][item.reactiveBy] === item.reactiveWhere"
+                    v-if="item.vue === 'ViltHasOne.vue' && form[item.reactiveRow] && (form[item.reactiveRow][item.reactiveBy] === item.reactiveWhere || item.reactiveWhere === null)"
                     :is="item.vue.replace('.vue', '')" :row="item" :view="view" @update:modelValue="update"
                     v-model="form[item.name]" :message="errors[item.name]"></Component>
                 <Component
-                    v-else-if="item.vue === 'ViltSlug.vue' && form[item.reactiveRow] && form[item.reactiveRow][item.reactiveBy] === item.reactiveWhere"
+                    v-else-if="item.vue === 'ViltSlug.vue' && form[item.reactiveRow] && (form[item.reactiveRow][item.reactiveBy] === item.reactiveWhere || item.reactiveWhere === null)"
                     :is="item.vue.replace('.vue', '')" :row="item" :view="view" @update:modelValue="update"
                     v-model="form[item.name]" :message="errors[item.name]"></Component>
-                <Component v-else-if="form[item.reactiveRow] && form[item.reactiveRow][item.reactiveBy] === item.reactiveWhere"
+                <Component v-else-if="form[item.reactiveRow] && (form[item.reactiveRow][item.reactiveBy] === item.reactiveWhere || item.reactiveWhere === null)"
                     :is="item.vue.replace('.vue', '')" :row="item" :view="view" @update:modelValue="update"
                     v-model="form[item.name]" :message="errors[item.name]"></Component>
             </div>
@@ -75,6 +75,7 @@ export default defineComponent({
     data() {
         return {
             form: {},
+            getFinalRows: []
         };
     },
     props: {
@@ -102,22 +103,22 @@ export default defineComponent({
     },
     computed:{
         getRows(){
-            let rows = this.$props.rows;
+            this.getFinalRows = this.$props.rows;
             let getRows = {};
-            for (let i = 0; i < rows.length; i++) {
-                if (rows[i].default) {
-                    getRows[rows[i].name] = rows[i].default;
+            for (let i = 0; i <  this.getFinalRows.length; i++) {
+                if ( this.getFinalRows[i].default) {
+                    getRows[ this.getFinalRows[i].name] =  this.getFinalRows[i].default;
                 }
                 else {
-                    if (rows[i].vue === 'ViltRelation.vue' || rows[i].vue === 'ViltRepeater.vue' || rows[i].vue === 'ViltSchema.vue') {
-                        getRows[rows[i].name] = [];
+                    if ( this.getFinalRows[i].vue === 'ViltRelation.vue' ||  this.getFinalRows[i].vue === 'ViltRepeater.vue' ||  this.getFinalRows[i].vue === 'ViltSchema.vue') {
+                        getRows[ this.getFinalRows[i].name] = [];
                     }
                     else {
-                        getRows[rows[i].name] = "";
+                        getRows[ this.getFinalRows[i].name] = "";
                     }
                 }
-            }
 
+            }
             return getRows;
         }
     },
@@ -127,6 +128,23 @@ export default defineComponent({
                 for(let i=0; i<this.$props.rows.length; i++){
                     if(this.$props.rows[i].vue === 'ViltSlug.vue'){
                         this.form[this.$props.rows[i].name] = this.vueSlug(val[this.$props.rows[i].reactiveRow] ? val[this.$props.rows[i].reactiveRow]: "");
+                    }
+                }
+                for (let i = 0; i < this.getFinalRows.length; i++) {
+                    if(this.getFinalRows[i].vue === 'ViltSelect.vue' && this.getFinalRows[i].options.length){
+
+                        for(let x=0; x<this.getFinalRows[i].options.length; x++){
+                            if(this.getFinalRows[i].options[x].hasOwnProperty('apiRow') && this.getFinalRows[i].options[x].apiRow !== null){
+                                for(let y=0; y<this.getFinalRows.length; y++){
+                                    if(this.getFinalRows[y].name === this.getFinalRows[i].options[x].apiRow){
+                                        if(this.form[this.getFinalRows[i].name] && this.form[this.getFinalRows[i].name][this.getFinalRows[i].trackById] === this.getFinalRows[i].options[x].id){
+                                            this.getFinalRows[y].label = this.getFinalRows[i].options[x].apiLabel;
+                                            this.getFinalRows[y].model = this.getFinalRows[i].options[x].apiModel;
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             },

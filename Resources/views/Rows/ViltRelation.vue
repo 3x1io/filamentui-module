@@ -97,45 +97,7 @@ export default defineComponent({
         };
     },
     mounted() {
-        let _this = this;
-        if(this.modelValue && this.modelValue.length && this.view ==='input'){
-            this.isLoading = true;
-            let ids = [];
-            for (let i = 0; i < this.modelValue.length; i++) {
-                ids.push(this.modelValue[i].id);
-            }
-            axios
-                .post(route("select"), {
-                    model_type: this.row.model,
-                    model_id: ids,
-                })
-                .then((response) => {
-                    _this.value = response.data.data;
-                    _this.isLoading = false;
-                });
-        }
-        else {
-            if (this.row.default) {
-                this.value = this.row.default;
-            }
-        }
-
-
-        if (this.row.model !== null && this.view ==='input') {
-            this.isLoading = true;
-            axios
-                .post(route("select"), {
-                    model_type: this.row.model,
-                })
-                .then((response) => {
-                    this.records = response.data.data.data;
-                    this.isLoading = false;
-                });
-        }
-
-        if(this.view !== 'input'){
-            this.value = this.modelValue;
-        }
+        this.initModel();
     },
     watch: {
         value: function (val) {
@@ -149,8 +111,57 @@ export default defineComponent({
                 this.value = val;
             }
         },
+        row: {
+            handler(val){
+                this.initModel();
+            },
+            deep: true
+        }
     },
     methods: {
+        initModel(){
+            let _this = this;
+            if(this.modelValue && this.modelValue.length && this.view ==='input'){
+                this.isLoading = true;
+                let ids = [];
+                for (let i = 0; i < this.modelValue.length; i++) {
+                    ids.push(this.modelValue[i].id);
+                }
+                axios
+                    .post(route("select"), {
+                        model_type: this.row.model,
+                        model_id: ids,
+                    })
+                    .then((response) => {
+                        _this.value = response.data.data;
+                        _this.isLoading = false;
+                    });
+            }
+            else {
+                if (this.row.default) {
+                    this.value = this.row.default;
+                }
+            }
+
+
+            if (this.row.model !== null && this.view ==='input') {
+                this.isLoading = true;
+                axios
+                    .post(route("select"), {
+                        model_type: this.row.model,
+                    })
+                    .then((response) => {
+                        this.records = response.data.data.data;
+                        this.isLoading = false;
+                    });
+            }
+
+            if(this.view !== 'input'){
+                this.value = this.modelValue;
+            }
+
+            this.value = "";
+        },
         transItem(item, key) {
             if (
                 item[key] &&

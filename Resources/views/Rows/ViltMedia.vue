@@ -185,7 +185,8 @@ export default defineComponent({
                 if(this.row.multi) {
                     this.value = this.modelValue;
                 } else {
-                    this.value.push(this.modelValue);
+                    this.value = this.modelValue;
+                    this.images = this.modelValue;
                 }
             }
             else {

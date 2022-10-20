@@ -75,11 +75,11 @@
         <div v-else>
             <div class="flex justify-start space-x-2">
                 <p
-                    class="inline-flex items-center justify-center space-x-2 ml-auto rtl:ml-0 rtl:mr-auto min-h-4 px-2 py-0.5 text-sm font-medium tracking-tight rounded-xl whitespace-normal bg-primary-200 dark:text-primary-500 text-primary-500 "
+                    class="flex justify-start space-x-2 ml-auto rtl:ml-0 rtl:mr-auto min-h-4 px-2 py-0.5 text-sm font-medium tracking-tight rounded-xl bg-primary-200 dark:text-primary-500 text-primary-600 my-auto"
                     :style="modelValue.hasOwnProperty('color') ? 'background-color: ' + modelValue.color : ''"
                 >
-                    <i v-if="modelValue.hasOwnProperty('icon')" :class="modelValue.icon"></i>
-                    <span>{{ modelValue[row.trackByName] }}</span>
+                    <i v-if="modelValue.hasOwnProperty('icon')" :class="modelValue.icon" class="text-md my-auto"></i>
+                    <span>{{ modelValue ? modelValue[row.trackByName]: null }}</span>
                 </p>
             </div>
         </div>
@@ -98,11 +98,11 @@
         </div>
         <div v-else>
             <p
-                class="inline-flex items-center justify-center ml-auto rtl:ml-0 rtl:mr-auto min-h-4 px-2 py-0.5 text-sm font-medium tracking-tight rounded-xl whitespace-normal bg-primary-200 dark:text-primary-500 text-primary-500 "
+                class="flex justify-center space-x-2 ml-auto rtl:ml-0 rtl:mr-auto min-h-4 px-2 py-0.5 text-sm font-medium tracking-tight rounded-xl bg-primary-200 dark:text-primary-500 text-primary-600 my-auto"
                 :style="modelValue.hasOwnProperty('color') ? 'background-color: ' + modelValue.color : ''"
             >
-                <i v-if="modelValue.hasOwnProperty('icon')" :class="modelValue.icon"></i>
-                {{ modelValue ? modelValue[row.trackByName]: null }}
+                <i v-if="modelValue.hasOwnProperty('icon')" :class="modelValue.icon" class="text-md my-auto"></i>
+                <span>{{ modelValue ? modelValue[row.trackByName]: null }}</span>
             </p>
         </div>
     </div>
