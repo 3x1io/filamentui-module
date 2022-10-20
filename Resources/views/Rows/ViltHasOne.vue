@@ -69,11 +69,23 @@
             <p class="font-bold capitalize">{{ row.label ? row.label : row.name }}</p>
         </div>
         <div>
-            <p>{{ modelValue[row.trackByName] ? transItem(modelValue, row.trackByName) : 'Not Selected' }}</p>
+            <p
+                class="flex justify-start space-x-2 ml-auto rtl:ml-0 rtl:mr-auto min-h-4 px-2 py-0.5 text-sm font-medium tracking-tight rounded-xl bg-primary-200 dark:text-primary-500 text-primary-600 my-auto"
+                :style="modelValue.hasOwnProperty('color') ? 'background-color: ' + modelValue.color : ''"
+            >
+                <i v-if="modelValue.hasOwnProperty('icon')" :class="modelValue.icon" class="text-md my-auto"></i>
+                <span>{{ modelValue ? modelValue[row.trackByName]: null }}</span>
+            </p>
         </div>
     </div>
     <div v-if="view === 'table' && modelValue">
-        <p>{{ modelValue[row.trackByName] ? transItem(modelValue, row.trackByName) : 'Not Selected' }}</p>
+        <p
+            class="flex justify-center space-x-2 ml-auto rtl:ml-0 rtl:mr-auto min-h-4 px-2 py-0.5 text-sm font-medium tracking-tight rounded-xl bg-primary-200 dark:text-primary-500 text-primary-600 my-auto"
+            :style="modelValue.hasOwnProperty('color') ? 'background-color: ' + modelValue.color : ''"
+        >
+            <i v-show="modelValue.hasOwnProperty('icon')" :class="modelValue.icon" class="text-md my-auto"></i>
+            <span>{{ modelValue ? modelValue[row.trackByName]: null }}</span>
+        </p>
     </div>
     <!-- Modals Generator -->
     <JetDialogModal v-if="view === 'input' && row.add" :show="showAdd" maxWidth="sm">
@@ -225,6 +237,12 @@ export default defineComponent({
                 this.value = val;
             }
         },
+        row: {
+            handler(val){
+                this.initModel();
+            },
+            deep: true
+        }
     },
     methods: {
         initModel(){
@@ -270,6 +288,8 @@ export default defineComponent({
                     this.addForm[this.row.rows[i].name] = "";
                 }
             }
+
+            this.value = "";
 
         },
         create(){

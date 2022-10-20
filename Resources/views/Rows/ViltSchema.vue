@@ -41,7 +41,7 @@
                     :key="key"
                     class="py-2 px-2"
                 >
-                    <th class="border">
+                    <th class="border p-2">
                         {{item.label ? item.label : item.name}}
                     </th>
                     <td class="border w-full">
@@ -141,16 +141,16 @@ export default defineComponent({
         },
     },
     mounted() {
-        if (this.modelValue !== null) {
+        this.main = this.optionRows;
+    },
+    beforeUpdate() {
+        if (this.modelValue !== null && typeof this.modelValue === 'object' && Object.keys(this.modelValue).length) {
             this.main = this.modelValue;
         }
         else {
-            this.main = this.optionRows;
-        }
-    },
-    beforeUpdate() {
-        if (this.row.default) {
-            this.main = this.row.default;
+            if (this.row.default) {
+                this.main = this.row.default;
+            }
         }
     },
     props: {

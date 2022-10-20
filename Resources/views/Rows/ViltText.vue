@@ -19,11 +19,25 @@
             <p class="font-bold capitalize">{{ row.label ? row.label: row.name }}</p>
         </div>
         <div>
-            <p>{{ modelValue }}</p>
+            <p v-if="row.badge" class="inline-flex items-center w-full justify-center ml-auto rtl:ml-0 rtl:mr-auto min-h-4 px-2 py-0.5 text-sm font-medium tracking-tight rounded-xl whitespace-normal " :class="row.color?'text-'+row.color+'-600 dark:text-'+row.color+'-600 bg-'+row.color+'-200': 'bg-primary-200 dark:text-primary-500 text-primary-600' ">
+            <span v-if="row.max">
+                {{modelValue.split(' ').slice(0, row.max).join('  ') +'...'}}
+            </span>
+                <span v-else>
+                {{modelValue}}
+            </span>
+            </p>
+            <a v-else-if="row.url" :href="modelValue" target="_blank">
+                <div class="flex justify-start space-x-2 ml-auto rtl:ml-0 rtl:mr-auto min-h-4 px-2 py-0.5 text-sm font-medium tracking-tight rounded-xl bg-primary-200 dark:text-primary-500 text-primary-600 my-auto">
+                    <i class="bx bx-link text-md mt-1"></i>
+                    <span>Open URL</span>
+                </div>
+            </a>
+            <p v-else>{{ modelValue }}</p>
         </div>
     </div>
-    <div v-if="view === 'table'">
-        <p v-if="row.badge" class="inline-flex items-center justify-center ml-auto rtl:ml-0 rtl:mr-auto min-h-4 px-2 py-0.5 text-sm font-medium tracking-tight rounded-xl whitespace-normal " :class="row.color?'text-'+row.color+'-600 dark:text-'+row.color+'-600 bg-'+row.color+'-200': 'bg-primary-200 dark:text-primary-500 text-primary-600' ">
+    <div v-if="view === 'table'" class="w-full">
+        <p v-if="row.badge" class="inline-flex items-center w-full justify-center ml-auto rtl:ml-0 rtl:mr-auto min-h-4 px-2 py-0.5 text-sm font-medium tracking-tight rounded-xl whitespace-normal " :class="row.color?'text-'+row.color+'-600 dark:text-'+row.color+'-600 bg-'+row.color+'-200': 'bg-primary-200 dark:text-primary-500 text-primary-600' ">
             <span v-if="row.max">
                 {{modelValue.split(' ').slice(0, row.max).join('  ') +'...'}}
             </span>
@@ -31,9 +45,11 @@
                 {{modelValue}}
             </span>
         </p>
-        <a v-else-if="row.url" :href="modelValue" target="_blank" class="inline-flex items-center justify-center ml-auto rtl:ml-0 rtl:mr-auto min-h-4 px-2 py-0.5 text-sm font-medium tracking-tight rounded-xl whitespace-normal bg-primary-200 dark:text-primary-500 text-primary-600" >
-            <i class="bx bx-link"></i>
-            Open URL
+        <a v-else-if="row.url" :href="modelValue" target="_blank">
+            <div class="flex justify-start space-x-2 ml-auto rtl:ml-0 rtl:mr-auto min-h-4 px-2 py-0.5 text-sm font-medium tracking-tight rounded-xl bg-primary-200 dark:text-primary-500 text-primary-600 my-auto">
+                <i class="bx bx-link text-md mt-1"></i>
+                <span>Open URL</span>
+            </div>
         </a>
         <p v-else>{{ modelValue }}</p>
     </div>
