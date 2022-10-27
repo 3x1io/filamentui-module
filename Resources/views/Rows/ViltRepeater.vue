@@ -185,13 +185,13 @@ export default defineComponent({
             deep: true
         },
         modelValue: function (val) {
-            if(this.view === 'input' && this.modelValue) {
+            if(this.view === 'input' && this.modelValue !== null) {
                 this.main = val;
             }
         },
     },
     beforeUpdate() {
-        if (this.modelValue) {
+        if (this.modelValue !== null) {
             this.main = this.modelValue;
         }
         else {

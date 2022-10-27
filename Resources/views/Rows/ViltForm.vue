@@ -1,6 +1,6 @@
 <template>
-    <div>
-        <div v-for="(item, key) in getFinalRows" :key="key">
+    <div class="grid grid-cols-12 gap-4">
+        <div v-for="(item, key) in getFinalRows" :key="key" :class="'col-span-'+item.col">
             <div v-if="item.reactive">
                 <Component
                     v-if="item.vue === 'ViltHasOne.vue' && form[item.reactiveRow] && (form[item.reactiveRow][item.reactiveBy] === item.reactiveWhere || item.reactiveWhere === null)"
@@ -48,6 +48,7 @@ import ViltRelation from '$$/ViltRelation.vue';
 import ViltHasOne from '$$/ViltHasOne.vue';
 import ViltSlug from '$$/ViltSlug.vue';
 import ViltIcon from '$$/ViltIcon.vue';
+import ViltSection from '$$/ViltSection.vue';
 
 export default defineComponent({
     components: {
@@ -71,6 +72,7 @@ export default defineComponent({
         ViltHasOne,
         ViltSlug,
         ViltIcon,
+        ViltSection
     },
     data() {
         return {

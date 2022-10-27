@@ -1,5 +1,5 @@
 <script setup>
-import {Link, useForm, usePage} from "@inertiajs/inertia-vue3";
+import {Link, usePage} from "@inertiajs/inertia-vue3";
 import JetDialogModal from "@@/Jetstream/DialogModal.vue";
 import JetSecondaryButton from "@@/Jetstream/SecondaryButton.vue";
 import JetButton from "@@/Jetstream/Button.vue";
@@ -35,7 +35,7 @@ const emit = defineEmits([
 ])
 
 onUpdated(()=>{
-    form.value = useForm(props.item);
+    form.value = props.item;
     showModal.value = props.show
 })
 
@@ -154,7 +154,6 @@ function saveRecord() {
     Inertia.post( route(props.url + ".store"), form.value, {
         preserveScroll: true,
         onSuccess: () => {
-            form.value.reset();
             emit("success");
             isDisabledBtn.value = false;
         },
@@ -186,7 +185,6 @@ function updateRecord(id) {
         preserveScroll: true,
         forceFormData: true,
         onSuccess: () => {
-            form.value.reset();
             emit("success");
             isDisabledBtn.value = false;
         },
