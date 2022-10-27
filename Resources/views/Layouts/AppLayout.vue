@@ -71,7 +71,7 @@ const styleStore = useStyleStore();
         <SyncLoader :loading="loading" color="#000" size="20px"></SyncLoader>
     </div>
 
-    <div v-else class="filament-body bg-gray-100 text-gray-900 dark:text-gray-100 dark:bg-gray-900">
+    <div v-else class="filament-body bg-gray-100 text-gray-900 dark:text-gray-100 dark:bg-gray-900 font-main">
         <div class="filament-app-layout flex w-full min-h-screen overflow-v-clip">
             <Aside />
             <div

@@ -96,7 +96,7 @@ onMounted(() => {
 });
 
 function handleFirebase(permission){
-    if(data.fcm){
+    if(data.fcm && data.fcm.config.apiKey && data.fcm.config.authDomain && data.fcm.config.projectId){
         const firebaseConfig = {
             apiKey: data.fcm.config.apiKey,
             authDomain: data.fcm.config.authDomain,
@@ -179,7 +179,7 @@ function handleFirebase(permission){
 }
 
 Notification.requestPermission().then((permission) => {
-    if(data.fcm) {
+    if(data.fcm && data.fcm.config.apiKey && data.fcm.config.authDomain && data.fcm.config.projectId){
         if (permission === "granted") {
             const firebaseConfig = {
                 apiKey: data.fcm.config.apiKey,
