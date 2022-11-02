@@ -1,5 +1,6 @@
 <?php
 
 return [
-    'name' => 'Filamentui'
+    'name' => 'Filamentui',
+    'soketi' => true
 ];

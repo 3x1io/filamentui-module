@@ -95,92 +95,9 @@ onMounted(() => {
     }
 });
 
-function handleFirebase(permission){
-    if(data.fcm && data.fcm.config.apiKey && data.fcm.config.authDomain && data.fcm.config.projectId){
-        const firebaseConfig = {
-            apiKey: data.fcm.config.apiKey,
-            authDomain: data.fcm.config.authDomain,
-            projectId: data.fcm.config.projectId,
-            storageBucket: data.fcm.config.storageBucket,
-            messagingSenderId: data.fcm.config.messagingSenderId,
-            appId: data.fcm.config.appId,
-            measurementId: data.fcm.config.measurementId
-        };
-        const app = initializeApp(firebaseConfig);
-        const messaging = getMessaging(app);
-
-        if (permission === "granted") {
-            console.log("Notification permission granted.");
-            if ("serviceWorker" in navigator) {
-                navigator.serviceWorker
-                    .register("/firebase-messaging-sw.js")
-                    .then(function (registration) {
-                        console.log(
-                            "Registration successful, scope is:",
-                            registration.scope
-                        );
-                    })
-                    .catch(function (err) {
-                        console.log(
-                            "Service worker registration failed, error:",
-                            err
-                        );
-                    });
-            }
-            if(!data.token){
-                getToken(messaging, {
-                    vapidKey:data.fcm.vapidKey,
-                })
-                    .then((currentToken) => {
-                        if (currentToken) {
-                            // Send the token to your server and update the UI if necessary
-                            // ...
-                            console.log(currentToken);
-                            Inertia.post(
-                                route("admin.notifications.token"),
-                                {
-                                    token: currentToken,
-                                    provider: "fcm-web",
-                                    model: "App\\Models\\User",
-                                    model_id: usePage().props.value.user.id,
-                                },
-                                {
-                                    onSuccess: () => {
-                                        console.log(
-                                            "Registration successful"
-                                        );
-                                    },
-                                }
-                            );
-                        } else {
-                            // Show permission request UI
-                            console.log(
-                                "No registration token available. Request permission to generate one."
-                            );
-                            // ...
-                        }
-                    })
-                    .catch((err) => {
-                        console.log(
-                            "An error occurred while retrieving token. ",
-                            err
-                        );
-                        // ...
-                    });
-            }
-        }
-        else {
-            console.log("Can't Access Notifications");
-        }
-    }
-    Notification.requestPermission().then((permission) => {
-        handleFirebase(permission);
-    });
-}
-
-Notification.requestPermission().then((permission) => {
-    if(data.fcm && data.fcm.config.apiKey && data.fcm.config.authDomain && data.fcm.config.projectId){
-        if (permission === "granted") {
+if(!usePage().props.value.data.theme.soketi){
+    function handleFirebase(permission){
+        if(data.fcm && data.fcm.config.apiKey && data.fcm.config.authDomain && data.fcm.config.projectId){
             const firebaseConfig = {
                 apiKey: data.fcm.config.apiKey,
                 authDomain: data.fcm.config.authDomain,
@@ -193,39 +110,176 @@ Notification.requestPermission().then((permission) => {
             const app = initializeApp(firebaseConfig);
             const messaging = getMessaging(app);
 
-            navigator.serviceWorker.getRegistration().then((reg) => {
-                onMessage(messaging, (payload) => {
-                    // var audio = new Audio('https://devsuez.emalleg.net/storage/sound/notifications.mp3');
-                    // audio.play();
-                    notifications.value.unshift({
-                        title: payload.data.title,
-                        url: payload.data.url,
-                        icon: payload.data.icon,
-                        image: payload.data.image,
-                        description: payload.data.message,
-                        type: payload.data.type,
-                        date: moment().fromNow(),
+            if (permission === "granted") {
+                console.log("Notification permission granted.");
+                if ("serviceWorker" in navigator) {
+                    navigator.serviceWorker
+                        .register("/firebase-messaging-sw.js")
+                        .then(function (registration) {
+                            console.log(
+                                "Registration successful, scope is:",
+                                registration.scope
+                            );
+                        })
+                        .catch(function (err) {
+                            console.log(
+                                "Service worker registration failed, error:",
+                                err
+                            );
+                        });
+                }
+                if(!data.token){
+                    getToken(messaging, {
+                        vapidKey:data.fcm.vapidKey,
+                    })
+                        .then((currentToken) => {
+                            if (currentToken) {
+                                // Send the token to your server and update the UI if necessary
+                                // ...
+                                console.log(currentToken);
+                                Inertia.post(
+                                    route("admin.notifications.token"),
+                                    {
+                                        token: currentToken,
+                                        provider: "fcm-web",
+                                        model: "App\\Models\\User",
+                                        model_id: usePage().props.value.user.id,
+                                    },
+                                    {
+                                        onSuccess: () => {
+                                            console.log(
+                                                "Registration successful"
+                                            );
+                                        },
+                                    }
+                                );
+                            } else {
+                                // Show permission request UI
+                                console.log(
+                                    "No registration token available. Request permission to generate one."
+                                );
+                                // ...
+                            }
+                        })
+                        .catch((err) => {
+                            console.log(
+                                "An error occurred while retrieving token. ",
+                                err
+                            );
+                            // ...
+                        });
+                }
+            }
+            else {
+                console.log("Can't Access Notifications");
+            }
+        }
+        Notification.requestPermission().then((permission) => {
+            handleFirebase(permission);
+        });
+    }
+
+    Notification.requestPermission().then((permission) => {
+        if(data.fcm && data.fcm.config.apiKey && data.fcm.config.authDomain && data.fcm.config.projectId){
+            if (permission === "granted") {
+                const firebaseConfig = {
+                    apiKey: data.fcm.config.apiKey,
+                    authDomain: data.fcm.config.authDomain,
+                    projectId: data.fcm.config.projectId,
+                    storageBucket: data.fcm.config.storageBucket,
+                    messagingSenderId: data.fcm.config.messagingSenderId,
+                    appId: data.fcm.config.appId,
+                    measurementId: data.fcm.config.measurementId
+                };
+                const app = initializeApp(firebaseConfig);
+                const messaging = getMessaging(app);
+
+                navigator.serviceWorker.getRegistration().then((reg) => {
+                    onMessage(messaging, (payload) => {
+                        // var audio = new Audio('https://devsuez.emalleg.net/storage/sound/notifications.mp3');
+                        // audio.play();
+                        notifications.value.unshift({
+                            title: payload.data.title,
+                            url: payload.data.url,
+                            icon: payload.data.icon,
+                            image: payload.data.image,
+                            description: payload.data.message,
+                            type: payload.data.type,
+                            date: moment().fromNow(),
+                        });
+                        // push notification can send event.data.json() as well
+                        const options = {
+                            body: payload.data.message,
+                            icon: payload.data.image,
+                            tag: "alert",
+                        };
+                        let notification = reg.showNotification(
+                            payload.data.title,
+                            options
+                        );
+                        // link to page on clicking the notification
+                        notification.onclick = (payload) => {
+                            window.open(payload.data.url);
+                        };
                     });
+                });
+
+            }
+        }
+    });
+}
+else {
+    Echo.channel('private.' + usePage().props.value.user.id).listen('PushEvent', (e) => {
+        notifications.value.unshift({
+            title: e.title,
+            url: e.url,
+            icon: e.icon,
+            image: e.image,
+            description: e.message,
+            type: e.type,
+            date: moment().fromNow(),
+        });
+
+        Notification.requestPermission().then((permission) => {
+            if (permission === "granted") {
+                if ("serviceWorker" in navigator) {
+                    navigator.serviceWorker
+                        .register("/pusher-sw.js")
+                        .then(function (registration) {
+                            console.log(
+                                "Registration successful, scope is:",
+                                registration.scope
+                            );
+                        })
+                        .catch(function (err) {
+                            console.log(
+                                "Service worker registration failed, error:",
+                                err
+                            );
+                        });
+                }
+                navigator.serviceWorker.getRegistration().then((reg) => {
+                    let audio = new Audio(usePage().props.value.data.appUrl+'/notifications.mp3');
+                    audio.play();
                     // push notification can send event.data.json() as well
                     const options = {
-                        body: payload.data.message,
-                        icon: payload.data.image,
+                        body: e.message,
+                        icon: e.image,
                         tag: "alert",
                     };
                     let notification = reg.showNotification(
-                        payload.data.title,
+                        e.title,
                         options
                     );
                     // link to page on clicking the notification
                     notification.onclick = (payload) => {
-                        window.open(payload.data.url);
+                        window.open(e.url);
                     };
                 });
-            });
-
-        }
-    }
-});
+            }
+        });
+    });
+}
 
 </script>
 <template>
