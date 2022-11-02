@@ -271,7 +271,7 @@ let filterData = computed(()=>{
                                             class="block border-gray-300 rounded shadow-sm text-primary-600 focus:border-primary-600 focus:ring focus:ring-primary-200 focus:ring-opacity-50 table-row-checkbox"
                                             value="1" type="checkbox" />
                                     </th>
-                                    <td v-for="(field, index) in listRows" :key="index" @click.prevent="props.roles.edit ? editItem(item) : null"
+                                    <td v-for="(field, index) in listRows" :key="index"
                                         class="w-full px-2 cursor-pointer">
                                         <Component :is="field.vue.replace('.vue', '')" :row="field" v-model="item[field.name]" view="table" />
                                     </td>

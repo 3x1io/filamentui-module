@@ -78,6 +78,11 @@ let rowFilterEdit = computed(()=>{
     let rowValue = [];
     for (let i = 0; i < rows.length; i++) {
         if (rows[i].edit) {
+            if(rows[i].vue === 'ViltRepeater.vue'){
+                if(!form.value[rows[i].name] || !form.value[rows[i].name].length){
+                    form.value[rows[i].name] = [];
+                }
+            }
             rowValue.push(rows[i]);
         }
     }
@@ -212,6 +217,29 @@ function updateRecord(id) {
     });
 }
 
+
+function tabFilter(tab ,rows, empty=false){
+    let tabsRows = [];
+    let tabsRowsEmpty = [];
+    for(let i=0; i<rows.length; i++){
+        if(rows[i].tab){
+            if(rows[i].tab === tab){
+                tabsRows.push(rows[i]);
+            }
+        }
+        else {
+            tabsRowsEmpty.push(rows[i]);
+        }
+    }
+
+    if(empty){
+        return tabsRowsEmpty;
+    }
+    else {
+        return tabsRows;
+    }
+
+}
 </script>
 
 <template>
@@ -249,9 +277,9 @@ function updateRecord(id) {
                     :options="{ defaultTabHash: props.type.tabs[0].key }"
                     @changed="changeTab"
                     ref="tabs"
-                    nav-class="flex justify-start space-x-2"
-                    nav-item-class="py-2 px-4 rounded-lg"
-                    nav-item-active-class="bg-main  py-2 px-4 rounded-lg text-white"
+                    nav-class="group relative overflow-hidden md:flex-1 border border-gray-300 shadow-sm bg-white rounded-xl overflow-hidden divide-y divide-gray-300 md:flex md:divide-y-0 dark:bg-gray-800 dark:border-gray-700 dark:divide-gray-700"
+                    nav-item-class="px-5 py-4 flex gap-3 items-center text-sm font-medium flex items-center h-full text-left rtl:text-right w-full cursor-not-allowed pointer-events-none"
+                    nav-item-active-class="bg-primary-600 text-white"
                 >
                     <Tab
                         v-for="(tab, key) in props.type.tabs"
@@ -268,7 +296,7 @@ function updateRecord(id) {
                             v-if="!props.edit"
                         >
                             <slot name="create-top"></slot>
-                            <ViltForm :rows="rowFilterCreate" :errors="props.errors" v-model="form" />
+                            <ViltForm :rows="tabFilter(tab.name, rowFilterCreate)" :errors="props.errors" v-model="form" />
                             <slot name="create"></slot>
                         </form>
                         <form
@@ -277,25 +305,13 @@ function updateRecord(id) {
                             v-else
                         >
                             <slot name="edit-top"></slot>
-                            <ViltForm :rows="rowFilterEdit" :edit="true"  :errors="props.errors" v-model="form" />
+                            <ViltForm :rows="tabFilter(tab.name,rowFilterEdit)" :edit="true"  :errors="props.errors" v-model="form" />
                             <slot name="edit"></slot>
                         </form>
                     </Tab>
                 </Tabs>
-                <form
-                    class="grid grid-cols-1 lg:grid-cols-1"
-                    action=""
-                    v-if="!props.edit"
-                >
-                    <slot name="create-top"></slot>
-                    <ViltForm :rows="rowFilterCreate" :errors="props.errors" v-model="form" />
-                    <slot name="create"></slot>
-                </form>
-                <form class="grid grid-cols-1 md:grid-cols-1" action="" v-else>
-                    <slot name="edit-top"></slot>
-                    <ViltForm :rows="rowFilterEdit" :edit="true"  :errors="props.errors" v-model="form" />
-                    <slot name="edit"></slot>
-                </form>
+                <ViltForm v-if="!props.edit" :rows="tabFilter(null, rowFilterCreate, true)" :errors="props.errors" v-model="form" />
+                <ViltForm :rows="tabFilter(null, rowFilterEdit, true)" :edit="true"  :errors="props.errors" v-model="form" />
             </div>
         </template>
 

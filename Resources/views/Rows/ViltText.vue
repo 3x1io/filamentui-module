@@ -98,12 +98,12 @@ export default defineComponent({
             }
         },
         modelValue: function (val) {
-            if(this.view === 'input'&& this.modelValue) {
+            if(this.view === 'input' && val) {
                 this.value = val;
             }
         },
     },
-    beforeUpdate(){
+    mounted(){
         if(this.modelValue !== null){
             this.value = this.modelValue
         }
