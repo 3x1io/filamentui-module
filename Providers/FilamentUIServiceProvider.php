@@ -39,6 +39,7 @@ class FilamentUIServiceProvider extends ServiceProvider
             'dark_logo' => setting('theme_dark_logo'),
             'sm_logo' => setting('theme_sm_logo'),
             'dark_sm_logo' => setting('theme_dark_sm_logo'),
+            'soketi' => config('filamentui.soketi')
         ]));
 
         VILT::loadResources($this->moduleName);
