@@ -42,18 +42,18 @@
                     </header>
                     <div class="px-6 py-4">
                         <div v-for="(item, key) in row.options" :key="key">
-                            <ViltText v-if="item.vue === 'ViltText.vue'" :row="item" v-model="main[index][item.name]" @update:modelValue="update"/>
-                            <ViltEmail v-if="item.vue === 'ViltEmail.vue'" :row="item" v-model="main[index][item.name]" @update:modelValue="update"/>
-                            <ViltTel v-if="item.vue === 'ViltTel.vue'" :row="item" v-model="main[index][item.name]" @update:modelValue="update"/>
-                            <ViltTextArea v-if="item.vue === 'ViltTextArea.vue'" :row="item" v-model="main[index][item.name]" @update:modelValue="update"/>
-                            <ViltNumber v-if="item.vue === 'ViltNumber.vue'" :row="item" v-model="main[index][item.name]" @update:modelValue="update"/>
-                            <ViltSelect v-if="item.vue === 'ViltSelect.vue'" :row="item" v-model="main[index][item.name]" @update:modelValue="update"/>
-                            <ViltSwitch v-if="item.vue === 'ViltSwitch.vue'" :row="item" v-model="main[index][item.name]" @update:modelValue="update"/>
-                            <ViltColor v-if="item.vue === 'ViltColor.vue'" :row="item" v-model="main[index][item.name]" @update:modelValue="update"/>
-                            <ViltDate v-if="item.vue === 'ViltDate.vue'" :row="item" v-model="main[index][item.name]" @update:modelValue="update"/>
-                            <ViltDateTime v-if="item.vue === 'ViltDateTime.vue'" :row="item" v-model="main[index][item.name]" @update:modelValue="update"/>
-                            <ViltTime v-if="item.vue === 'ViltTime.vue'" :row="item" v-model="main[index][item.name]" @update:modelValue="update"/>
-                            <ViltMedia v-if="item.vue === 'ViltMedia.vue'" :row="item" v-model="main[index][item.name]" @update:modelValue="update"/>
+                            <ViltText v-if="item.vue === 'ViltText.vue'" :row="item" view="input" v-model="main[index][item.name]"/>
+                            <ViltEmail v-if="item.vue === 'ViltEmail.vue'" :row="item" view="input" v-model="main[index][item.name]"/>
+                            <ViltTel v-if="item.vue === 'ViltTel.vue'" :row="item" view="input" v-model="main[index][item.name]"/>
+                            <ViltTextArea v-if="item.vue === 'ViltTextArea.vue'" view="input" :row="item" v-model="main[index][item.name]"/>
+                            <ViltNumber v-if="item.vue === 'ViltNumber.vue'" view="input" :row="item" v-model="main[index][item.name]"/>
+                            <ViltSelect v-if="item.vue === 'ViltSelect.vue'" view="input" :row="item" v-model="main[index][item.name]"/>
+                            <ViltSwitch v-if="item.vue === 'ViltSwitch.vue'" view="input" :row="item" v-model="main[index][item.name]"/>
+                            <ViltColor v-if="item.vue === 'ViltColor.vue'" view="input" :row="item" v-model="main[index][item.name]"/>
+                            <ViltDate v-if="item.vue === 'ViltDate.vue'" view="input" :row="item" v-model="main[index][item.name]"/>
+                            <ViltDateTime v-if="item.vue === 'ViltDateTime.vue'" view="input" :row="item" v-model="main[index][item.name]"/>
+                            <ViltTime v-if="item.vue === 'ViltTime.vue'" view="input" :row="item" v-model="main[index][item.name]"/>
+                            <ViltMedia v-if="item.vue === 'ViltMedia.vue'" view="input" :row="item" v-model="main[index][item.name]"/>
                         </div>
                     </div>
                 </div>
@@ -75,59 +75,62 @@
         <div>
             <p class="font-bold capitalize">{{ row.label ? row.label : row.name }}</p>
         </div>
-        <table class="w-full table-normal">
-            <thead>
+        <div class="overflow-scroll">
+            <table class="w-full table-normal">
+                <thead>
                 <tr>
                     <th class="w-full border"  v-for="(item, key) in row.options" :key="key">
                         {{item.label ? item.label : item.name}}
                     </th>
                 </tr>
-            </thead>
-            <tbody>
-            <tr
-                v-for="(value, key) in main"
-                :key="key"
-                class="px-2 py-2"
-            >
-                <td class="w-full border" v-for="(item, index) in row.options" :key="index">
-                    <div v-if="item.vue === 'ViltMedia.vue'">
-                        <img :src="value[item.name]" alt="" class="w-16" />
-                    </div>
-                    <div v-else>
-                        <p v-if="value[item.name]" class="px-2 py-2">{{ value[item.name] }}</p>
-                    </div>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                <tr
+                    v-for="(value, key) in main"
+                    :key="key"
+                    class="px-2 py-2"
+                >
+                    <td class="w-full border" v-for="(item, index) in row.options" :key="index">
+                        <div v-if="item.vue === 'ViltMedia.vue'">
+                            <img :src="value[item.name]" alt="" class="w-16" />
+                        </div>
+                        <div v-else>
+                            <p v-if="value[item.name]" class="px-2 py-2">{{ value[item.name] }}</p>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
     </div>
     <div v-if="view === 'table' && main && main.length">
-        <div class="mx-1 my-1">
+        <div class="mx-1 my-1 overflow-x-scroll">
             <table class="w-full table-normal">
-            <thead>
-                <tr>
-                    <th class="w-full border"  v-for="(item, key) in row.options" :key="key">
-                        {{item.label ? item.label : item.name}}
-                    </th>
+                <thead>
+                    <tr>
+                        <th class="w-full border"  v-for="(item, key) in row.options" :key="key">
+                            {{item.label ? item.label : item.name}}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                <tr
+                    v-for="(value, key) in main"
+                    :key="key"
+                    class="px-2 py-2"
+                >
+                    <td class="w-full border" v-for="(item, index) in row.options" :key="index">
+                        <div v-if="item.vue === 'ViltMedia.vue'">
+                            <img :src="value[item.name]" alt="" class="w-16" />
+                        </div>
+                        <div v-else>
+                            <p v-if="value[item.name]" class="px-2 py-2">{{ value[item.name] }}</p>
+                        </div>
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-            <tr
-                v-for="(value, key) in main"
-                :key="key"
-                class="px-2 py-2"
-            >
-                <td class="w-full border" v-for="(item, index) in row.options" :key="index">
-                    <div v-if="item.vue === 'ViltMedia.vue'">
-                        <img :src="value[item.name]" alt="" class="w-16" />
-                    </div>
-                    <div v-else>
-                        <p v-if="value[item.name]" class="px-2 py-2">{{ value[item.name] }}</p>
-                    </div>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+                </tbody>
+            </table>
         </div>
     </div>
 </template>
@@ -191,16 +194,19 @@ export default defineComponent({
         },
     },
     beforeUpdate() {
-        if (this.modelValue !== null) {
-            this.main = this.modelValue;
-        }
-        else {
-            if (this.row.default) {
+        if(this.view === 'input'){
+            if (this.modelValue !== null) {
+                this.main = this.modelValue;
+            }
+            else if (this.row.default) {
                 this.main.push(this.row.default);
             }
             else {
                 this.main.push(this.optionRows);
             }
+        }
+        else {
+            this.main = this.modelValue;
         }
     },
     props: {
@@ -270,9 +276,6 @@ export default defineComponent({
         },
         removeItem(value) {
             this.main.splice(this.main.indexOf(value), 1);
-            this.$emit("update:modelValue", this.main);
-        },
-        update() {
             this.$emit("update:modelValue", this.main);
         },
     },

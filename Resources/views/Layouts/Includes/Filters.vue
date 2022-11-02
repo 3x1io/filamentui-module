@@ -73,6 +73,7 @@ function filter(filterBy, filterValue) {
 }
 
 function hideCol(col) {
+    cookies.remove(cookieName);
     store.toggleCol(col);
     cookies.set(cookieName, cols.value);
 }
