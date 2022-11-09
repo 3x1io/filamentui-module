@@ -13,7 +13,7 @@
                                  alt="No Man’s Sky">
                             <span class="option__desc">
                                 <span class="option__title">
-                                    {{ transItem(props.option, 'name') }}
+                                    {{ transItem(props.option, row.trackByName) }}
                                 </span>
                                 <br>
                                 <span class="text-sm text-gray-400 option__small" v-if="props.option.description">
@@ -28,7 +28,7 @@
                                  :alt="props.option.name">
                             <div class="option__desc">
                                             <span class="option__title">
-                                                {{ transItem(props.option, 'name') }}
+                                                {{ transItem(props.option, row.trackByName) }}
                                             </span>
                                 <br>
                                 <span class="text-sm text-gray-400 option__small" v-if="props.option.description">
