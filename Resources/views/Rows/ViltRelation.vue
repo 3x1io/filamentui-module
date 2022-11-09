@@ -19,7 +19,7 @@
                     <img class="option__image w-8" v-if="props.option.media" :src="props.option.media" alt="No Man’s Sky">
                     <span class="option__desc">
                         <span class="option__title">
-                            {{ transItem(props.option, 'name') }}
+                            {{ transItem(props.option,row.trackByName) }}
                         </span>
                         <br>
                         <span class="option__small text-sm text-gray-400" v-if="props.option.description">
@@ -33,7 +33,7 @@
                     <img class="option__image w-8" v-if="props.option.media" :src="props.option.media" :alt="props.option.name">
                     <div class="option__desc">
                         <span class="option__title">
-                            {{ transItem(props.option, 'name') }}
+                            {{ transItem(props.option, row.trackByName) }}
                         </span>
                         <br>
                         <span class="option__small text-sm text-gray-400" v-if="props.option.description">
