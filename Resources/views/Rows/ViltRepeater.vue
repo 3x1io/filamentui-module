@@ -188,14 +188,14 @@ export default defineComponent({
             deep: true
         },
         modelValue: function (val) {
-            if(this.view === 'input' && this.modelValue !== null) {
+            if(this.view === 'input' && this.modelValue !== null && this.modelValue !== undefined) {
                 this.main = val;
             }
         },
     },
     beforeUpdate() {
         if(this.view === 'input'){
-            if (this.modelValue !== null) {
+            if (this.modelValue !== null && this.modelValue !== undefined) {
                 this.main = this.modelValue;
             }
             else if (this.row.default) {

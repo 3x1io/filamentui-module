@@ -2,5 +2,5 @@
 
 return [
     'name' => 'Filamentui',
-    'soketi' => true
+    'soketi' => false
 ];
