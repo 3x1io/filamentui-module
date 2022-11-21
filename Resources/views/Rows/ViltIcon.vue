@@ -79,7 +79,7 @@ export default defineComponent({
         },
     },
     beforeUpdate() {
-        if (this.modelValue !== null) {
+        if (this.modelValue !== null && this.modelValue !== undefined) {
             this.value = this.modelValue
         }
         else {

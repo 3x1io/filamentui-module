@@ -144,7 +144,7 @@ export default defineComponent({
         this.main = this.optionRows;
     },
     beforeUpdate() {
-        if (this.modelValue !== null && typeof this.modelValue === 'object' && Object.keys(this.modelValue).length) {
+        if (this.modelValue !== null && this.modelValue !== undefined && typeof this.modelValue === 'object' && Object.keys(this.modelValue).length) {
             this.main = this.modelValue;
         }
         else {
