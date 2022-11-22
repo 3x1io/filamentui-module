@@ -95,7 +95,7 @@ onMounted(() => {
     }
 });
 
-if(!usePage().props.value.data.theme.soketi){
+if(!usePage().props.value.data.theme.socket){
     function handleFirebase(permission){
         if(data.fcm && data.fcm.config.apiKey && data.fcm.config.authDomain && data.fcm.config.projectId){
             const firebaseConfig = {
@@ -229,7 +229,8 @@ if(!usePage().props.value.data.theme.soketi){
     });
 }
 else {
-    Echo.channel('private.' + usePage().props.value.user.id).listen('PushEvent', (e) => {
+    window.Echo.channel('private.' + usePage().props.value.user.id).listen(".notification", (e) => {
+        console.log('H!');
         notifications.value.unshift({
             title: e.title,
             url: e.url,
