@@ -122,6 +122,29 @@ const dashboardMenu = usePage().props.value.data.menus.dashboard;
         </header>
 
         <nav class="flex-1 py-6 overflow-y-auto filament-sidebar-nav">
+            <div>
+                <div>
+                    <ul class="mx-3 mt-2 space-y-1 text-sm">
+                        <li class="filament-sidebar-item ">
+                            <Link :href="route('dashboard')" :class="{
+                                'bg-primary-500 text-white': route('dashboard').replace(usePage().props.value.data.appUrl, '') === usePage().url.value,
+                                'hover:bg-gray-500/5 focus:bg-gray-500/5 dark:text-gray-300 dark:hover:bg-gray-700': route('dashboard').replace(usePage().props.value.data.appUrl, '') !== usePage().url.value
+                            }"
+                                  class="flex items-center justify-center gap-3 px-3 py-2 font-medium transition rounded-lg ">
+
+                                <i class="w-5 h-5 shrink-0 bx bxs-home"  style="font-size: 20px"></i>
+
+                                <div class="flex flex-1" v-show="!layoutStore.isAsideLgActive" style="">
+                                <span>
+                                    {{ trans('global.dashboard') }}
+                                </span>
+                                </div>
+                            </Link>
+                        </li>
+                    </ul>
+                </div>
+                <div class="my-6 ml-6 border-t rtl:ml-auto rtl:mr-6 dark:border-gray-700" v-if="Object.keys(dashboardMenu).length"></div>
+            </div>
             <div v-for="(item, key) in dashboardMenu" :key="key">
                 <button @click.prevent="layoutStore.setAsideMenuGroup(item.label)"
                     v-show="!layoutStore.isAsideLgActive && (item && (item.label!=='main'))"

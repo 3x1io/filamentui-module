@@ -27,6 +27,7 @@
                         <ViltHasOne v-if="row.vue === 'ViltHasOne.vue'"  :row="row" v-model="item[row.name]" view="view"/>
                         <ViltIcon v-if="row.vue === 'ViltIcon.vue'"  :row="row" v-model="item[row.name]" view="view"/>
                         <ViltSection v-if="row.vue === 'ViltSection.vue'"  :row="row" v-model="item[row.name]" view="view"/>
+                        <ViltRelationManager v-if="row.vue === 'ViltRelationManager.vue'" :row="row" view="view"/>
                     </div>
                 </div>
             </div>
@@ -68,9 +69,11 @@ import ViltRelation from "$$/ViltRelation.vue";
 import ViltHasOne from "$$/ViltHasOne.vue";
 import ViltIcon from "$$/ViltIcon.vue";
 import ViltSection from "$$/ViltSection.vue";
+import ViltRelationManager from "$$/ViltRelationManager.vue";
 
 export default defineComponent({
     components: {
+        ViltRelationManager,
         ViltHasOne,
         Link,
         JetDialogModal,

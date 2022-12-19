@@ -1,9 +1,8 @@
 <script setup>
-import { Head } from '@inertiajs/inertia-vue3'
 import { computed, ref, onMounted } from "vue";
 import { useMainStore } from "@@/Stores/main";
 import { useLayoutStore } from "@@/Stores/layout";
-import {usePage} from "@inertiajs/inertia-vue3";
+import {usePage, Head} from "@inertiajs/inertia-vue3";
 import {useTrans} from "@@/Composables/useTrans";
 import {Inertia} from "@inertiajs/inertia";
 
@@ -48,7 +47,7 @@ export default {
 </script>
 
 <template>
-
+    <Head title="Dashboard"/>
     <div  class="filament-page filament-dashboard-page">
         <div class="space-y-6">
             <header

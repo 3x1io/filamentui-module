@@ -164,22 +164,22 @@ function modalActionRun(modal, action, confirmed=false, method="post") {
         if (selectedID.value) {
             modalAction.value[modal].id = selectedID.value;
         }
-        let form = useForm(modalAction.value[modal]);
+        let modelForm = useForm(modalAction.value[modal]);
         if(method==="post"){
-            Inertia.post(route(action), form,{
+            Inertia.post(route(action), modelForm,{
                 preserveScroll: true,
                 onSuccess: () => {
-                    form.reset();
+                    modelForm.reset();
                     actionModal.value[modal] = false;
                     success();
                 },
             });
         }
         else {
-            Inertia.get(route(action), form,{
+            Inertia.get(route(action), modelForm,{
                 preserveScroll: true,
                 onSuccess: () => {
-                    form.reset();
+                    modelForm.reset();
                     actionModal.value[modal] = false;
                     success();
                 },
@@ -314,37 +314,41 @@ function createItem(){
     Inertia.reload({
         preserveScroll: true,
         preserveState: true,
+        onSuccess: ()=>{
+            form.value = useForm(formMake());
+            if(props.render.form.name === 'page'){
+                Inertia.get(route(props.list.url + '.create'), {}, {
+                    preserveScroll: true,
+                })
+            }
+            else {
+                edit.value = false
+                form.value = useForm(formMake);
+                createModal.value = !createModal.value;
+            }
+        }
     });
-    form.value = useForm(formMake());
-    if(props.render.form.name === 'page'){
-        Inertia.get(route(props.list.url + '.create'), {}, {
-            preserveScroll: true,
-        })
-    }
-    else {
-        edit.value = false
-        form.value = useForm(formMake);
-        createModal.value = !createModal.value;
-    }
+
 }
 
 function editItem(item){
     Inertia.reload({
         preserveScroll: true,
         preserveState: true,
-    });
-
-    form.value = useForm(formMake());
-    if(props.render.form.name === 'page'){
-        Inertia.visit(route(props.list.url + '.edit', item.id))
-    }
-    else {
-        axios.get(route(props.list.url + '.show', item.id)).then((response) => {
-            form.value = useForm(response.data.data);
-            createModal.value = true;
+        onSuccess: ()=>{
+            if(props.render.form.name === 'page'){
+                Inertia.visit(route(props.list.url + '.edit', item.id))
+            }
+            else {
+                let getFormResponse = {};
+                axios.get(route(props.list.url + '.show', item.id)).then((response) => {
+                    form.value = useForm(response.data.data);
+                    createModal.value = true;
+                });
+            }
             edit.value = true;
-        });
-    }
+        }
+    });
 };
 
 function viewItem(item){
@@ -463,7 +467,7 @@ onMounted(() => {
     handleCookie();
 
     //Set Form
-    form.value = useForm(formMake());
+    // form.value = useForm(formMake());
 
     //Set Current List Filters
     search.value = props.list.search;
@@ -531,7 +535,6 @@ layoutStore.setBreadcrumbs({
     label: rLang.value ? rLang.value.index : ''
 });
 function closeModal(type){
-    form.value = useForm(formMake());
     if(type === 'createModal'){
         createModal.value = !createModal.value;
     }
