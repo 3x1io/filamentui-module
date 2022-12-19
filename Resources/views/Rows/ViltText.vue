@@ -94,22 +94,33 @@ export default defineComponent({
     watch: {
         value: function (val) {
             if(this.view === 'input') {
-                this.$emit("update:modelValue", val);
+                if(this.modelValue !== null) {
+                    this.$emit("update:modelValue", val);
+                }
             }
         },
         modelValue: function (val) {
-            if(this.view === 'input' && val) {
+            if(this.view === 'input' && val !== null) {
                 this.value = val;
+            }
+            else {
+                this.value = "";
             }
         },
     },
     mounted(){
-        if(this.modelValue !== null && this.modelValue !== undefined) {
+        if(this.modelValue === null){
+            this.value = "";
+        }
+        if(this.modelValue !== null && this.modelValue !== "" && this.modelValue !== undefined) {
             this.value = this.modelValue
         }
         else {
             if(this.row.default){
                 this.value = this.row.default
+            }
+            else {
+                this.value = "";
             }
         }
     },
